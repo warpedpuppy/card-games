@@ -73,6 +73,9 @@ export default {
         this.deck = _.shuffle(this.deck);
         this.layout();
     },
+    solitaireDeal: function () {
+        this.container.removeChildren();
+    },
     layout: function () {
         let counter = 0;
         for (let i = 0; i < 4; i ++) {
