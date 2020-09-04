@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import _ from 'lodash';
 export default {
     cardWidth: 50,
     cardHeight: 75,
@@ -22,6 +23,8 @@ export default {
 
         this.container.x = (app.stage.width - this.container.width) + (this.cardWidth / 2) / 2;
         this.container.y = (app.stage.height - this.container.height) + (this.cardHeight / 2) / 2;
+
+
     },
     card: function (counter, counter2) {
         const cont = new PIXI.Container();
@@ -51,7 +54,7 @@ export default {
 
         // CREATE PROPERTIES
         cont.rank = counter;
-        cont.suit = suit;
+        cont.suit = counter2;
         return cont;
     },
     createDeck: function () {
@@ -62,6 +65,23 @@ export default {
                 card.x = (this.cardWidth + this.buffer) * j;
                 card.y = (this.cardHeight + this.buffer) * i;
                 this.container.addChild(card);
+            }
+        }
+    },
+    shuffle: function () {
+        this.container.removeChildren();
+        this.deck = _.shuffle(this.deck);
+        this.layout();
+    },
+    layout: function () {
+        let counter = 0;
+        for (let i = 0; i < 4; i ++) {
+            for (let j = 0; j < 13; j++) {
+                let card = this.deck[counter];
+                card.x = (this.cardWidth + this.buffer) * j;
+                card.y = (this.cardHeight + this.buffer) * i;
+                this.container.addChild(card);
+                counter ++;
             }
         }
     },
