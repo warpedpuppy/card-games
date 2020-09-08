@@ -34,6 +34,11 @@ export default {
         graphics.endFill();
         cont.addChild(graphics)
 
+        const line = new PIXI.Graphics();
+        line.lineStyle(1, 0x000000, 1, 1).moveTo(0,0).lineTo(this.cardWidth, 0)
+        
+        cont.addChild(line)
+
         let rank = new PIXI.Text(this.rank[counter],{
             fontFamily : 'Arial', 
             fontSize: 10, 
@@ -57,6 +62,13 @@ export default {
         cont.suit = counter2;
         return cont;
     },
+    slot: function() {
+        const graphics = new PIXI.Graphics();
+        graphics.beginFill(0x000000);
+        graphics.drawRoundedRect(0, 0, this.cardWidth, this.cardHeight, 10);
+        graphics.endFill();
+        return graphics;
+    },
     createDeck: function () {
         for (let i = 0; i < 4; i ++) {
             for (let j = 0; j < 13; j++) {
@@ -75,6 +87,38 @@ export default {
     },
     solitaireDeal: function () {
         this.container.removeChildren();
+        let loopingQ = 7, rows = 7, cardCounter = 0, startX = this.cardWidth + (this.buffer * 4), startY = this.cardHeight + (this.buffer * 4);
+        
+        for (let i = 0; i < rows; i ++) {
+            for (let j = 0; j < loopingQ; j ++) {
+                let card = this.deck[cardCounter];
+                card.x = startX + (this.cardWidth + this.buffer) * j;
+                card.y = startY + (this.buffer * i);
+                this.container.addChild(card);
+                cardCounter ++;
+            }
+            loopingQ --;
+            startX += this.cardWidth + this.buffer;
+        }
+
+        for (let i = cardCounter; i < 52; i ++) {
+            let card = this.deck[i];
+            card.x = 0;
+            card.y = startY;
+            this.container.addChild(card);
+        }
+
+        let slotCont = new PIXI.Container();
+
+        for (let i = 0; i < 4; i++) {
+            let slot = this.slot();
+            slot.x = (this.cardWidth + this.buffer) * i;
+            slotCont.addChild(slot);
+        }
+        slotCont.x = (this.container.width - slotCont.width) / 2;
+        this.container.addChild(slotCont)
+
+        this.container.x = (800 - this.container.width) / 2;
     },
     layout: function () {
         let counter = 0;
