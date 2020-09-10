@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import _ from 'lodash';
+import DRAG from './drag.script';
 export default {
     cardWidth: 50,
     cardHeight: 75,
@@ -77,7 +78,8 @@ export default {
         cont.reveal = function () {
             cover.visible = false;
         }
-
+        cont.interactive = true;
+        cont.buttonMode = true;
         return cont;
     },
     slot: function() {
@@ -118,14 +120,16 @@ export default {
             loopingQ --;
             startX += this.cardWidth + this.buffer;
         }
-
+    let card;
         for (let i = cardCounter; i < 52; i ++) {
-            let card = this.deck[i];
+            card = this.deck[i];
             card.cover();
             card.x = 0;
             card.y = startY;
             this.container.addChild(card);
         }
+
+        DRAG.addDrag(card)
 
         let slotCont = new PIXI.Container();
 
@@ -148,6 +152,9 @@ export default {
                 card.y = (this.cardHeight + this.buffer) * i;
                 this.container.addChild(card);
                 counter ++;
+
+    // For mouse-only events
+    // .on('mousedown', onDragStart)
             }
         }
     },
