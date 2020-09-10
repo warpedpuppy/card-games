@@ -28,16 +28,19 @@ export default {
     },
     card: function (counter, counter2) {
         const cont = new PIXI.Container();
+
+        const cardBack = new PIXI.Graphics();
+        cardBack.beginFill(0x000000);
+        cardBack.drawRoundedRect(0, 0, this.cardWidth, this.cardHeight, 10);
+        cardBack.endFill();
+        cont.addChild(cardBack)
+
+
         const graphics = new PIXI.Graphics();
         graphics.beginFill(0xCCCCCC);
-        graphics.drawRoundedRect(0, 0, this.cardWidth, this.cardHeight, 10);
+        graphics.drawRoundedRect(2, 2, this.cardWidth - 4, this.cardHeight - 4, 10);
         graphics.endFill();
         cont.addChild(graphics)
-
-        const line = new PIXI.Graphics();
-        line.lineStyle(1, 0x000000, 1, 1).moveTo(0,0).lineTo(this.cardWidth, 0)
-        
-        cont.addChild(line)
 
         let rank = new PIXI.Text(this.rank[counter],{
             fontFamily : 'Arial', 
@@ -60,6 +63,21 @@ export default {
         // CREATE PROPERTIES
         cont.rank = counter;
         cont.suit = counter2;
+
+        const cover = new PIXI.Graphics();
+        cover.beginFill(0x669900);
+        cover.drawRoundedRect(2, 2, this.cardWidth - 4, this.cardHeight - 4, 10);
+        cover.endFill();
+        cover.visible = false;
+        cont.addChild(cover)
+
+        cont.cover = function () {
+            cover.visible = true;
+        }
+        cont.reveal = function () {
+            cover.visible = false;
+        }
+
         return cont;
     },
     slot: function() {
@@ -103,6 +121,7 @@ export default {
 
         for (let i = cardCounter; i < 52; i ++) {
             let card = this.deck[i];
+            card.cover();
             card.x = 0;
             card.y = startY;
             this.container.addChild(card);
