@@ -15,7 +15,6 @@ export default {
     },
     onDragMove: function () {
             if (this.dragging) {
-                console.log(this.adjustX)
                 const newPosition = this.data.getLocalPosition(this.parent);
                 this.x = newPosition.x - this.adjustX;
                 this.y = newPosition.y - this.adjustY;
