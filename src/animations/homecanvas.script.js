@@ -128,7 +128,8 @@ export default {
             card.y = startY;
             this.container.addChild(card);
         }
-
+        card.x = 5;
+        card.y +=5;
         DRAG.addDrag(card)
 
         let slotCont = new PIXI.Container();

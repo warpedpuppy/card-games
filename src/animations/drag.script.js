@@ -2,24 +2,23 @@ import * as PIXI from 'pixi.js';
 export default {
 
     onDragStart: function (event) {
-        // store a reference to the data
-        // the reason for this is because of multitouch
-        // we want to track the movement of this particular touch
+ 
+        let globalPoint = this.getGlobalPosition(new PIXI.Point(this.x, this.y))
+        this.adjustX = Math.abs(event.data.global.x - globalPoint.x)
+        this.adjustY = Math.abs(event.data.global.y - globalPoint.y)
         this.data = event.data;
-        this.alpha = 0.5;
         this.dragging = true;
     },
     onDragEnd: function () {
-        this.alpha = 1;
         this.dragging = false;
-        // set the interaction data to null
         this.data = null;
     },
     onDragMove: function () {
             if (this.dragging) {
+                console.log(this.adjustX)
                 const newPosition = this.data.getLocalPosition(this.parent);
-                this.x = newPosition.x;
-                this.y = newPosition.y;
+                this.x = newPosition.x - this.adjustX;
+                this.y = newPosition.y - this.adjustY;
             }
     },
     addDrag: function (item) {
