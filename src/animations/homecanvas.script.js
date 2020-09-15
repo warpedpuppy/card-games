@@ -1,9 +1,13 @@
 import * as PIXI from 'pixi.js';
 import _ from 'lodash';
 import DRAG from './drag.script';
+
+
 export default {
-    cardWidth: 50,
-    cardHeight: 75,
+    cardWidth: 100,
+    cardHeight: 150,
+    canvasWidth: 1000,
+    canvasHeight: 800,
     buffer: 10,
     deck: [],
     drawPile: [],
@@ -13,7 +17,7 @@ export default {
     rank: ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"],
     init: function () {
         const app = new PIXI.Application({
-            width: 800, height: 600, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1,
+            width: this.canvasWidth, height: this.canvasWidth, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1,
         });
         document.getElementById("home-canvas").appendChild(app.view);
         
@@ -25,8 +29,6 @@ export default {
 
         this.createDeck();
 
-        this.container.x = (app.stage.width - this.container.width) + (this.cardWidth / 2) / 2;
-        this.container.y = (app.stage.height - this.container.height) + (this.cardHeight / 2) / 2;
 
     },
     card: function (counter, counter2) {
@@ -86,12 +88,15 @@ export default {
         cont.buttonMode = true;
         return cont;
     },
-    slot: function() {
+    slot: function(suit) {
+        const container = new PIXI.Container();
         const graphics = new PIXI.Graphics();
         graphics.beginFill(0x000000);
         graphics.drawRoundedRect(0, 0, this.cardWidth, this.cardHeight, 10);
         graphics.endFill();
-        return graphics;
+        container.suit = suit;
+        container.addChild(graphics)
+        return container;
     },
     createDeck: function () {
         for (let i = 0; i < 4; i ++) {
@@ -110,6 +115,7 @@ export default {
         this.layout();
     },
     solitaireDeal: function () {
+
         this.container.removeChildren();
         let loopingQ = 7, rows = 7, cardCounter = 0, startX = this.cardWidth + (this.buffer * 4), startY = this.cardHeight + (this.buffer * 4), card;
         
@@ -120,7 +126,11 @@ export default {
                 card.y = startY + (this.buffer * i);
                 this.container.addChild(card);
                 cardCounter ++;
-                if (j === 0) card.reveal();
+                if (j === 0) {
+                    card.reveal();
+                    DRAG.addDrag(card);
+                
+                }
             }
             
             loopingQ --;
@@ -142,14 +152,15 @@ export default {
         let slotCont = new PIXI.Container();
 
         for (let i = 0; i < 4; i++) {
-            let slot = this.slot();
-            slot.x = (this.cardWidth + this.buffer) * i;
+            let slot = this.slot(this.suits[i]);
+            slot.x = (this.cardWidth +( this.buffer * 4)) * i;
+            DRAG.addSlot(slot);
             slotCont.addChild(slot);
         }
         slotCont.x = (this.container.width - slotCont.width) / 2;
         this.container.addChild(slotCont)
-
-        this.container.x = (800 - this.container.width) / 2;
+        this.container.x = (this.canvasWidth - this.container.width) / 2;
+        this.container.y = 20;
     },
     layout: function () {
         let counter = 0;
@@ -173,7 +184,7 @@ export default {
             top3[i].reveal();
             e.target.this.container.removeChild(top3[i]);
             e.target.this.container.addChild(top3[i])
-            top3[i].y += 100;
+            top3[i].y += this.cardHeight + 20;
         }
 
         e.target.this.flipPile = [...e.target.this.flipPile, ...top3];
