@@ -26,6 +26,8 @@ export default {
         .on('pointerup', this.onDragEnd)
         .on('pointerupoutside', this.onDragEnd)
         .on('pointermove', this.onDragMove)
+
+        item.hasDrag = true;
     },
     removeDrag: function (item) {
         item
@@ -33,5 +35,7 @@ export default {
         .on('pointerup', null)
         .on('pointerupoutside', null)
         .on('pointermove', null)
+
+        item.hasDrag = false;
     }
 }
