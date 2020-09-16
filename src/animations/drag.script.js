@@ -3,6 +3,11 @@ import UTILS from '../utils/utils';
 export default {
     slots: [],
     activeCard: undefined,
+    tempGraphics: new PIXI.Graphics(),
+    stage: undefined,
+    init: function (stage) {
+        this.stage = stage;
+    },
     addSlot: function (slot) {
         this.slots.push(slot);
     },
@@ -34,28 +39,41 @@ export default {
 
             for (let i = 0; i < 4; i ++) {
 
+                if(!this.activeCard)break;
+
                 let tempPoint = this.slots[i].getGlobalPosition(new PIXI.Point(this.slots[i].x, this.slots[i].y))
                 let obj = {
-                    x: tempPoint.x - (100 / 2),
-                    y: tempPoint.y - 20,
+                    x: tempPoint.x,
+                    y: tempPoint.y,
                     width: this.slots[i].width,
                     height: this.slots[i].height
                 }
-                // let tempGraphics = new PIXI.Graphics();
-                // tempGraphics.clear();
-                // tempGraphics.beginFill(0x333333).drawRect(obj.x, obj.y, obj.width, obj.height).endFill();
-                // this.slots[i].parent.parent.addChild(tempGraphics)
-                // let obj2 = {
-                //     x: this.activeCard.x,
-                //     y: this.activeCard.y,
-                //     width: this.activeCard.width,
-                //     height: this.activeCard.height
-                // }
-                
-                // console.log(obj, obj2)
+                let tempPoint2 = this.activeCard.getGlobalPosition(new PIXI.Point(this.activeCard.x, this.activeCard.y))
+                let obj2 = {
+                    x: tempPoint2.x,
+                    y: tempPoint2.y,
+                    width: this.activeCard.width,
+                    height: this.activeCard.height
+                }
 
-                if (UTILS.rectangleRectangleCollisionDetection(obj, this.activeCard)) {
-                    console.log("hit", this.slots[i].suit)
+
+
+                if ( 
+                UTILS.rectangleRectangleCollisionDetection(obj, obj2) &&
+                this.slots[i].rank === this.activeCard.rank &&
+                this.slots[i].suit === this.activeCard.suit
+                ) {
+                    this.activeCard.dragging = false;
+                    this.removeDrag(this.activeCard);
+                    let tempParent = this.activeCard.parent;
+                    let destinationParent =  this.slots[i].parent;
+                    tempParent.removeChild(this.activeCard);
+                    destinationParent.addChild(this.activeCard);
+                    this.activeCard.x = this.slots[i].x;
+                    this.activeCard.y = this.slots[i].y;
+                    this.activeCard = undefined;
+                    this.slots[i].rank ++;
+
                 }
             }
         }
@@ -70,12 +88,17 @@ export default {
         item.hasDrag = true;
     },
     removeDrag: function (item) {
-        item
-        .on('pointerdown', null)
-        .on('pointerup', null)
-        .on('pointerupoutside', null)
-        .on('pointermove', null)
+        console.log(item.rank, item.suit, this)
+        item.removeAllListeners();
+        // .off('pointerdown', this.onDragStart)
+        // .off('pointerup', this.onDragEnd)
+        // .off('pointerupoutside', this.onDragEnd)
+        // .off('pointermove', this.onDragMove);
+        // .on('pointerdown', undefined)
+        // .on('pointerup', undefined)
+        // .on('pointerupoutside', undefined)
+        // .on('pointermove', undefined)
 
-        item.hasDrag = false;
+         item.hasDrag = false;
     }
 }

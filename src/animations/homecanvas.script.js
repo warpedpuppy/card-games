@@ -29,6 +29,7 @@ export default {
 
         this.createDeck();
 
+        DRAG.init(app.stage)
 
     },
     card: function (counter, counter2) {
@@ -67,7 +68,7 @@ export default {
 
         // CREATE PROPERTIES
         cont.rank = counter + 1;
-        cont.suit = counter2;
+        cont.suit = this.suits[counter2];
 
         const cover = new PIXI.Graphics();
         cover.beginFill(0x669900);
@@ -95,6 +96,7 @@ export default {
         graphics.drawRoundedRect(0, 0, this.cardWidth, this.cardHeight, 10);
         graphics.endFill();
         container.suit = suit;
+        container.rank = 1;
         container.addChild(graphics)
         return container;
     },
@@ -153,7 +155,7 @@ export default {
 
         for (let i = 0; i < 4; i++) {
             let slot = this.slot(this.suits[i]);
-            slot.x = (this.cardWidth +( this.buffer * 4)) * i;
+            slot.x = (this.cardWidth +( this.buffer * 15)) * i;
             DRAG.addSlot(slot);
             slotCont.addChild(slot);
         }
