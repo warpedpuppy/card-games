@@ -59,9 +59,9 @@ export default {
 
 
                 if ( 
-                UTILS.rectangleRectangleCollisionDetection(obj, obj2) &&
-                this.slots[i].rank === this.activeCard.rank &&
-                this.slots[i].suit === this.activeCard.suit
+                    UTILS.rectangleRectangleCollisionDetection(obj, obj2) &&
+                    this.slots[i].rank === this.activeCard.rank &&
+                    this.slots[i].suit === this.activeCard.suit
                 ) {
                     this.activeCard.dragging = false;
                     this.removeDrag(this.activeCard);
@@ -88,17 +88,8 @@ export default {
         item.hasDrag = true;
     },
     removeDrag: function (item) {
-        console.log(item.rank, item.suit, this)
+       // console.log(item.rank, item.suit, this)
         item.removeAllListeners();
-        // .off('pointerdown', this.onDragStart)
-        // .off('pointerup', this.onDragEnd)
-        // .off('pointerupoutside', this.onDragEnd)
-        // .off('pointermove', this.onDragMove);
-        // .on('pointerdown', undefined)
-        // .on('pointerup', undefined)
-        // .on('pointerupoutside', undefined)
-        // .on('pointermove', undefined)
-
-         item.hasDrag = false;
+        item.hasDrag = false;
     }
 }

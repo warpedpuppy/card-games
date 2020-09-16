@@ -13,6 +13,7 @@ export default {
     drawPile: [],
     topDrawPileCard: undefined,
     flipPile: [],
+    piles: {},
     suits: ["clubs", "diamonds", "hearts", "spades"],
     rank: ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"],
     init: function () {
@@ -44,7 +45,7 @@ export default {
 
         const graphics = new PIXI.Graphics();
         graphics.beginFill(0xCCCCCC);
-        graphics.drawRoundedRect(2, 2, this.cardWidth - 4, this.cardHeight - 4, 10);
+        graphics.drawRoundedRect(5, 5, this.cardWidth - 10, this.cardHeight - 10, 10);
         graphics.endFill();
         cont.addChild(graphics)
 
@@ -54,7 +55,7 @@ export default {
             fill : 0xff1010,
             align : 'center'});
         rank.y = 10
-        rank.x = 5;
+        rank.x = 15;
         cont.addChild(rank);
 
         let suit = new PIXI.Text(this.suits[counter2],{
@@ -62,7 +63,7 @@ export default {
             fontSize: 10, 
             fill : 0xff1010,
             align : 'center'});
-        suit.x = 5;
+        suit.x = 15;
         suit.y = 22;
         cont.addChild(suit)
 
@@ -75,7 +76,7 @@ export default {
         cover.drawRoundedRect(2, 2, this.cardWidth - 4, this.cardHeight - 4, 10);
         cover.endFill();
         cover.visible = false;
-        cont.addChild(cover)
+        cont.addChild(cover);
 
         cont.cover = function () {
             cover.visible = true;
@@ -119,23 +120,33 @@ export default {
     solitaireDeal: function () {
 
         this.container.removeChildren();
-        let loopingQ = 7, rows = 7, cardCounter = 0, startX = this.cardWidth + (this.buffer * 4), startY = this.cardHeight + (this.buffer * 4), card;
+        let loopingQ = 7, rows = 7, cardCounter = 0, startX = this.cardWidth + (this.buffer * 4), startY = this.cardHeight + (this.buffer * 4), card, objectIndex = 7;
         
         for (let i = 0; i < rows; i ++) {
+
             for (let j = 0; j < loopingQ; j ++) {
                 card = this.deck[cardCounter];
                 card.x = startX + (this.cardWidth + this.buffer) * j;
                 card.y = startY + (this.buffer * i);
                 this.container.addChild(card);
                 cardCounter ++;
+                let index = (objectIndex - loopingQ) + j;
+                //console.log(index, ": ", card.suit, card.rank)
+                if (!this.piles[index]) {
+                    this.piles[index] = [card]
+                } else {
+                    this.piles[index].push(card)
+                }
                 if (j === 0) {
                     card.reveal();
                     DRAG.addDrag(card);
                 
                 }
+                
             }
             
             loopingQ --;
+
             startX += this.cardWidth + this.buffer;
         }
         for (let i = cardCounter; i < 52; i ++) {
@@ -163,6 +174,15 @@ export default {
         this.container.addChild(slotCont)
         this.container.x = (this.canvasWidth - this.container.width) / 2;
         this.container.y = 20;
+
+        // console.log(this.piles)
+
+        // for (let key in this.piles) {
+        //     console.log(key, ": ");
+        //     this.piles[key].forEach( card => {
+        //         console.log(card.suit, card.rank)
+        //     })
+        // }
     },
     layout: function () {
         let counter = 0;
