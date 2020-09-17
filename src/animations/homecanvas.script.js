@@ -1,24 +1,23 @@
 import * as PIXI from 'pixi.js';
+import CARD from './card.script';
 import _ from 'lodash';
 import DRAG from './drag.script';
-
+import VARS from './vars.script';
 
 export default {
-    cardWidth: 100,
-    cardHeight: 150,
-    canvasWidth: 1000,
-    canvasHeight: 800,
+    // cardWidth: 100,
+    // cardHeight: 150,
+    // canvasWidth: 1000,
+    // canvasHeight: 800,
     buffer: 10,
     deck: [],
     drawPile: [],
     topDrawPileCard: undefined,
     flipPile: [],
     piles: {},
-    suits: ["clubs", "diamonds", "hearts", "spades"],
-    rank: ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"],
     init: function () {
         const app = new PIXI.Application({
-            width: this.canvasWidth, height: this.canvasWidth, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1,
+            width: VARS.canvasWidth, height: VARS.canvasWidth, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1,
         });
         document.getElementById("home-canvas").appendChild(app.view);
         
@@ -28,83 +27,47 @@ export default {
         
         app.ticker.add(this.ticker);
 
+        DRAG.init(app.stage, this);
+        CARD.init(VARS);
+
         this.createDeck();
 
-        DRAG.init(app.stage)
+       
 
-    },
-    card: function (counter, counter2) {
-        const cont = new PIXI.Container();
-
-        const cardBack = new PIXI.Graphics();
-        cardBack.beginFill(0x000000);
-        cardBack.drawRoundedRect(0, 0, this.cardWidth, this.cardHeight, 10);
-        cardBack.endFill();
-        cont.addChild(cardBack)
-
-
-        const graphics = new PIXI.Graphics();
-        graphics.beginFill(0xCCCCCC);
-        graphics.drawRoundedRect(5, 5, this.cardWidth - 10, this.cardHeight - 10, 10);
-        graphics.endFill();
-        cont.addChild(graphics)
-
-        let rank = new PIXI.Text(this.rank[counter],{
-            fontFamily : 'Arial', 
-            fontSize: 10, 
-            fill : 0xff1010,
-            align : 'center'});
-        rank.y = 10
-        rank.x = 15;
-        cont.addChild(rank);
-
-        let suit = new PIXI.Text(this.suits[counter2],{
-            fontFamily : 'Arial', 
-            fontSize: 10, 
-            fill : 0xff1010,
-            align : 'center'});
-        suit.x = 15;
-        suit.y = 22;
-        cont.addChild(suit)
-
-        // CREATE PROPERTIES
-        cont.rank = counter + 1;
-        cont.suit = this.suits[counter2];
-
-        const cover = new PIXI.Graphics();
-        cover.beginFill(0x669900);
-        cover.drawRoundedRect(2, 2, this.cardWidth - 4, this.cardHeight - 4, 10);
-        cover.endFill();
-        cover.visible = false;
-        cont.addChild(cover);
-
-        cont.cover = function () {
-            cover.visible = true;
-        }
-        cont.reveal = function () {
-            cover.visible = false;
-        }
-
-        cont.cover();
-        cont.interactive = true;
-        cont.buttonMode = true;
-        return cont;
     },
     slot: function(suit) {
         const container = new PIXI.Container();
         const graphics = new PIXI.Graphics();
         graphics.beginFill(0x000000);
-        graphics.drawRoundedRect(0, 0, this.cardWidth, this.cardHeight, 10);
+        graphics.drawRoundedRect(0, 0, VARS.cardWidth, VARS.cardHeight, 10);
         graphics.endFill();
         container.suit = suit;
         container.rank = 1;
         container.addChild(graphics)
         return container;
     },
+    cardPlacedOnSlot: function (card) {
+
+        let tempArray = this.piles[card.index];
+        //REMOVE FROM PILE
+        //tempArray.forEach(card => console.log(card.suit, card.rank))
+        tempArray.splice(tempArray.indexOf(card), 1)
+        //tempArray.forEach(card => console.log(card.suit, card.rank))
+
+        //FLIP TOP OF PILE
+         if (tempArray.length) {
+            let finalIndex = tempArray.length - 1;
+            let newTopCard = tempArray[finalIndex];
+            newTopCard.reveal();
+            DRAG.addDrag(newTopCard);
+        }
+       
+
+    },
     createDeck: function () {
         for (let i = 0; i < 4; i ++) {
             for (let j = 0; j < 13; j++) {
-                let card = this.card(j, i);
+                let card = CARD.create(j, i);
                 card.this = this;
                 this.deck.push(card);
             }
@@ -120,17 +83,20 @@ export default {
     solitaireDeal: function () {
 
         this.container.removeChildren();
-        let loopingQ = 7, rows = 7, cardCounter = 0, startX = this.cardWidth + (this.buffer * 4), startY = this.cardHeight + (this.buffer * 4), card, objectIndex = 7;
+        let loopingQ = 7, rows = 7, cardCounter = 0, startX = VARS.cardWidth + (this.buffer * 4), startY = VARS.cardHeight + (this.buffer * 4), card, objectIndex = 7;
         
         for (let i = 0; i < rows; i ++) {
 
             for (let j = 0; j < loopingQ; j ++) {
                 card = this.deck[cardCounter];
-                card.x = startX + (this.cardWidth + this.buffer) * j;
+                card.x = startX + (VARS.cardWidth + this.buffer) * j;
                 card.y = startY + (this.buffer * i);
                 this.container.addChild(card);
                 cardCounter ++;
+
+                //index is the key in the object for the piles of cards.  the values will be arrays of the cards in that pile
                 let index = (objectIndex - loopingQ) + j;
+                card.index = index;
                 //console.log(index, ": ", card.suit, card.rank)
                 if (!this.piles[index]) {
                     this.piles[index] = [card]
@@ -147,7 +113,7 @@ export default {
             
             loopingQ --;
 
-            startX += this.cardWidth + this.buffer;
+            startX += VARS.cardWidth + this.buffer;
         }
         for (let i = cardCounter; i < 52; i ++) {
             card = this.deck[i];
@@ -165,17 +131,17 @@ export default {
         let slotCont = new PIXI.Container();
 
         for (let i = 0; i < 4; i++) {
-            let slot = this.slot(this.suits[i]);
-            slot.x = (this.cardWidth +( this.buffer * 15)) * i;
+            let slot = this.slot(VARS.suits[i]);
+            slot.x = (VARS.cardWidth +( this.buffer * 15)) * i;
             DRAG.addSlot(slot);
             slotCont.addChild(slot);
         }
         slotCont.x = (this.container.width - slotCont.width) / 2;
         this.container.addChild(slotCont)
-        this.container.x = (this.canvasWidth - this.container.width) / 2;
+        this.container.x = (VARS.canvasWidth - this.container.width) / 2;
         this.container.y = 20;
 
-        // console.log(this.piles)
+         console.log(this.piles)
 
         // for (let key in this.piles) {
         //     console.log(key, ": ");
@@ -189,8 +155,8 @@ export default {
         for (let i = 0; i < 4; i ++) {
             for (let j = 0; j < 13; j++) {
                 let card = this.deck[counter];
-                card.x = (this.cardWidth + this.buffer) * j;
-                card.y = (this.cardHeight + this.buffer) * i;
+                card.x = (VARS.cardWidth + this.buffer) * j;
+                card.y = (VARS.cardHeight + this.buffer) * i;
                 this.container.addChild(card);
                 counter ++;
             }
@@ -206,7 +172,7 @@ export default {
             top3[i].reveal();
             e.target.this.container.removeChild(top3[i]);
             e.target.this.container.addChild(top3[i])
-            top3[i].y += this.cardHeight + 20;
+            top3[i].y += VARS.cardHeight + 20;
         }
 
         e.target.this.flipPile = [...e.target.this.flipPile, ...top3];

@@ -5,8 +5,10 @@ export default {
     activeCard: undefined,
     tempGraphics: new PIXI.Graphics(),
     stage: undefined,
-    init: function (stage) {
+    parent: undefined,
+    init: function (stage, parent) {
         this.stage = stage;
+        this.parent = parent;
     },
     addSlot: function (slot) {
         this.slots.push(slot);
@@ -24,6 +26,8 @@ export default {
         parent.addChild(this.activeCard)
     },
     onDragEnd: function () {
+        
+        if (!this.activeCard) return;
         this.dragging = false;
         this.data = null;
         this.activeCard.x = this.activeCard.storePos.x;
@@ -71,6 +75,7 @@ export default {
                     destinationParent.addChild(this.activeCard);
                     this.activeCard.x = this.slots[i].x;
                     this.activeCard.y = this.slots[i].y;
+                    this.parent.cardPlacedOnSlot(this.activeCard);
                     this.activeCard = undefined;
                     this.slots[i].rank ++;
 
