@@ -20,6 +20,7 @@ export default {
         this.container = new PIXI.Container();
         
         app.stage.addChild(this.container);
+        this.app = app;
         
         app.ticker.add(this.ticker);
 
@@ -50,6 +51,15 @@ export default {
         //remove card from current pile
         this.piles[activeCard.index].splice(this.piles[activeCard.index].indexOf(activeCard), 1)
 
+        //FLIP TOP OF PILE
+        let tempArray = this.piles[activeCard.index];
+        if (tempArray.length) {
+            let finalIndex = tempArray.length - 1;
+            let newTopCard = tempArray[finalIndex];
+            newTopCard.reveal();
+            DRAG.addDrag(newTopCard);
+        }
+
         //add card to new pile
         this.piles[topCard.index].push(activeCard);
         activeCard.x = topCard.x;
@@ -57,8 +67,8 @@ export default {
         activeCard.index = topCard.index;
 
         topCard.parent.addChild(activeCard)
-      
-
+        
+        
 
     },
     cardPlacedOnSlot: function (card) {

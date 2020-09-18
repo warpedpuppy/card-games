@@ -81,12 +81,13 @@ export default {
                     width: this.activeCard.width,
                     height: this.activeCard.height
                 }
+             
 
             //PILE TO PILE CHECK
             for (let key in this.parent.piles) {
-                let topCard = this.parent.piles[key][this.parent.piles[key].length - 1]
-               // console.log(topCard.index, topCard.rank, topCard.suit);
-               if (!topCard) break;
+               let topCard = this.parent.piles[key][this.parent.piles[key].length - 1]
+               
+               if (!this.activeCard || !topCard || topCard === this.activeCard) continue;
                let tempPoint3 = topCard.getGlobalPosition(new PIXI.Point(topCard.x, topCard.y))
                let obj = {
                    x: tempPoint3.x,
@@ -94,9 +95,9 @@ export default {
                    width: topCard.width,
                    height: topCard.height
                }
+         
 
                 if ( 
-                    topCard !== this.activeCard && 
                     topCard.color !== this.activeCard.color && 
                     topCard.rank === (this.activeCard.rank + 1) &&
                     UTILS.rectangleRectangleCollisionDetection(obj, activeCardObj)
@@ -105,13 +106,7 @@ export default {
 
                     this.parent.switchCardPile(this.activeCard, topCard);
                     this.activeCard = undefined;
-                    // remove drag listeners from card
-
-                    // remove card from that drag pile 
                 }
-
-
-
             }
 
             //SLOT CHECK
@@ -127,16 +122,12 @@ export default {
                     height: this.slots[i].height
                 }
                 
-
-
-
                 if ( 
                     UTILS.rectangleRectangleCollisionDetection(obj, activeCardObj) &&
                     this.slots[i].rank === this.activeCard.rank &&
                     this.slots[i].suit === this.activeCard.suit
                 ) {
    
-
                     this.activeCard.dragging = false;
                     this.removeDrag(this.activeCard);
                     let tempParent = this.activeCard.parent;
@@ -148,9 +139,6 @@ export default {
                     this.parent.cardPlacedOnSlot(this.activeCard);
                     this.activeCard = undefined;
                     this.slots[i].rank ++;
-
-                    
-
                 }
             }
         }
