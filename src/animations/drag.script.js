@@ -16,12 +16,12 @@ export default {
     },
     onDragStart: function (e) {
         this.activeCard = e.target;
-
+         let arr = this.parent.piles[this.activeCard.index];
         //is this the top card?
         this.parent.piles[this.activeCard.index].forEach( card => {
             console.log(card.rank, card.suit)
         })
-        let topCardOfPile = this.parent.piles[this.activeCard.index][this.parent.piles[this.activeCard.index].length - 1];
+        let topCardOfPile = arr[arr.length - 1];
         if(this.activeCard === topCardOfPile) {
             console.log("top card")
         } else {
@@ -30,15 +30,25 @@ export default {
 
 
         let globalPoint = this.activeCard.getGlobalPosition(new PIXI.Point(this.activeCard.x, this.activeCard.y))
-        this.dragCont.adjustX = Math.abs(e.data.global.x - globalPoint.x)
-        this.dragCont.adjustY = Math.abs(e.data.global.y - globalPoint.y)
+        this.dragCont.adjustX = Math.abs(e.data.global.x - globalPoint.x);
+        this.dragCont.adjustY = Math.abs(e.data.global.y - globalPoint.y);
         this.dragCont.data = e.data;
         this.dragCont.dragging = true;
-        let parent = this.activeCard.storeParent = this.activeCard.parent;
-        this.activeCard.storePos = {x: this.activeCard.x, y: this.activeCard.y};
-        this.activeCard.x = this.activeCard.y = 0;
-        parent.removeChild(this.activeCard);
-        this.dragCont.addChild(this.activeCard)
+        let parent = this.activeCard.parent;
+       // this.activeCard.storePos = {x: this.activeCard.x, y: this.activeCard.y};
+        //this.activeCard.x = this.activeCard.y = 0;
+       // parent.removeChild(this.activeCard);
+       
+       let activeCardIndex = arr.indexOf(this.activeCard), yOffset = 0;
+       for (let i = activeCardIndex; i < arr.length; i++) {
+            arr[i].storeParent = arr[i].parent;
+            arr[i].storePos = {x: arr[i].x, y: arr[i].y};
+            arr[i].x = 0;
+            arr[i].y = yOffset * 40;
+            this.dragCont.addChild(arr[i]);
+            yOffset++;
+       }
+        
 
         parent.addChild(this.dragCont)
     },
@@ -47,9 +57,13 @@ export default {
         if (!this.activeCard) return;
         this.dragCont.dragging = false;
         this.dragCont.data = null;
-        this.activeCard.x = this.activeCard.storePos.x;
-        this.activeCard.y = this.activeCard.storePos.y;
-        this.activeCard.storeParent.addChild(this.activeCard)
+        let tempArray = [...this.dragCont.children];
+        tempArray.forEach( card => {
+            card.x = card.storePos.x;
+            card.y = card.storePos.y;
+            card.storeParent.addChild(card)
+        })
+       
         this.activeCard = undefined;
         this.dragCont.parent.removeChild(this.dragCont);
     },
