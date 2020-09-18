@@ -6,6 +6,7 @@ export default {
     tempGraphics: new PIXI.Graphics(),
     stage: undefined,
     parent: undefined,
+    dragCont: new PIXI.Container(),
     init: function (stage, parent) {
         this.stage = stage;
         this.parent = parent;
@@ -15,32 +16,91 @@ export default {
     },
     onDragStart: function (e) {
         this.activeCard = e.target;
+
+        //is this the top card?
+        this.parent.piles[this.activeCard.index].forEach( card => {
+            console.log(card.rank, card.suit)
+        })
+        let topCardOfPile = this.parent.piles[this.activeCard.index][this.parent.piles[this.activeCard.index].length - 1];
+        if(this.activeCard === topCardOfPile) {
+            console.log("top card")
+        } else {
+            console.log("not top card")
+        }
+
+
         let globalPoint = this.activeCard.getGlobalPosition(new PIXI.Point(this.activeCard.x, this.activeCard.y))
-        this.activeCard.adjustX = Math.abs(e.data.global.x - globalPoint.x)
-        this.activeCard.adjustY = Math.abs(e.data.global.y - globalPoint.y)
-        this.activeCard.data = e.data;
-        this.activeCard.dragging = true;
-        let parent = this.activeCard.parent;
+        this.dragCont.adjustX = Math.abs(e.data.global.x - globalPoint.x)
+        this.dragCont.adjustY = Math.abs(e.data.global.y - globalPoint.y)
+        this.dragCont.data = e.data;
+        this.dragCont.dragging = true;
+        let parent = this.activeCard.storeParent = this.activeCard.parent;
         this.activeCard.storePos = {x: this.activeCard.x, y: this.activeCard.y};
+        this.activeCard.x = this.activeCard.y = 0;
         parent.removeChild(this.activeCard);
-        parent.addChild(this.activeCard)
+        this.dragCont.addChild(this.activeCard)
+
+        parent.addChild(this.dragCont)
     },
     onDragEnd: function () {
         
         if (!this.activeCard) return;
-        this.dragging = false;
-        this.data = null;
+        this.dragCont.dragging = false;
+        this.dragCont.data = null;
         this.activeCard.x = this.activeCard.storePos.x;
         this.activeCard.y = this.activeCard.storePos.y;
+        this.activeCard.storeParent.addChild(this.activeCard)
         this.activeCard = undefined;
+        this.dragCont.parent.removeChild(this.dragCont);
     },
     onDragMove: function (e) {
         
-        if (this.activeCard && this.activeCard.dragging) {
-            const newPosition = this.activeCard.data.getLocalPosition(this.activeCard.parent);
-            this.activeCard.x = newPosition.x - this.activeCard.adjustX;
-            this.activeCard.y = newPosition.y - this.activeCard.adjustY;
+        if (this.activeCard && this.dragCont.dragging) {
+            const newPosition = this.dragCont.data.getLocalPosition(this.dragCont.parent);
+            this.dragCont.x = newPosition.x - this.dragCont.adjustX;
+            this.dragCont.y = newPosition.y - this.dragCont.adjustY;
 
+            let activeCardGlobalPoint = this.activeCard.getGlobalPosition(new PIXI.Point(this.activeCard.x, this.activeCard.y))
+                let activeCardObj = {
+                    x: activeCardGlobalPoint.x,
+                    y: activeCardGlobalPoint.y,
+                    width: this.activeCard.width,
+                    height: this.activeCard.height
+                }
+
+            //PILE TO PILE CHECK
+            for (let key in this.parent.piles) {
+                let topCard = this.parent.piles[key][this.parent.piles[key].length - 1]
+               // console.log(topCard.index, topCard.rank, topCard.suit);
+               if (!topCard) break;
+               let tempPoint3 = topCard.getGlobalPosition(new PIXI.Point(topCard.x, topCard.y))
+               let obj = {
+                   x: tempPoint3.x,
+                   y: tempPoint3.y,
+                   width: topCard.width,
+                   height: topCard.height
+               }
+
+                if ( 
+                    topCard !== this.activeCard && 
+                    topCard.color !== this.activeCard.color && 
+                    topCard.rank === (this.activeCard.rank + 1) &&
+                    UTILS.rectangleRectangleCollisionDetection(obj, activeCardObj)
+                ) {
+                    console.log('top card hit');
+
+                    this.parent.switchCardPile(this.activeCard, topCard);
+                    this.activeCard = undefined;
+                    // remove drag listeners from card
+
+                    // remove card from that drag pile 
+                }
+
+
+
+            }
+
+            //SLOT CHECK
             for (let i = 0; i < 4; i ++) {
 
                 if(!this.activeCard)break;
@@ -52,21 +112,17 @@ export default {
                     width: this.slots[i].width,
                     height: this.slots[i].height
                 }
-                let tempPoint2 = this.activeCard.getGlobalPosition(new PIXI.Point(this.activeCard.x, this.activeCard.y))
-                let obj2 = {
-                    x: tempPoint2.x,
-                    y: tempPoint2.y,
-                    width: this.activeCard.width,
-                    height: this.activeCard.height
-                }
+                
 
 
 
                 if ( 
-                    UTILS.rectangleRectangleCollisionDetection(obj, obj2) &&
+                    UTILS.rectangleRectangleCollisionDetection(obj, activeCardObj) &&
                     this.slots[i].rank === this.activeCard.rank &&
                     this.slots[i].suit === this.activeCard.suit
                 ) {
+   
+
                     this.activeCard.dragging = false;
                     this.removeDrag(this.activeCard);
                     let tempParent = this.activeCard.parent;
@@ -78,6 +134,8 @@ export default {
                     this.parent.cardPlacedOnSlot(this.activeCard);
                     this.activeCard = undefined;
                     this.slots[i].rank ++;
+
+                    
 
                 }
             }

@@ -42,6 +42,7 @@ export default {
         // CREATE PROPERTIES
         cont.rank = counter + 1;
         cont.suit = this.vars.suits[counter2];
+        cont.color = (cont.suit === 'hearts' || cont.suit === 'diamonds') ? "red" : "black" ;
 
         const cover = new PIXI.Graphics();
         cover.beginFill(0x669900);

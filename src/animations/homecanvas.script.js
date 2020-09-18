@@ -44,6 +44,23 @@ export default {
         container.addChild(graphics)
         return container;
     },
+    switchCardPile: function (activeCard, topCard) {
+
+
+        //remove card from current pile
+        this.piles[activeCard.index].splice(this.piles[activeCard.index].indexOf(activeCard), 1)
+
+        //add card to new pile
+        this.piles[topCard.index].push(activeCard);
+        activeCard.x = topCard.x;
+        activeCard.y = topCard.y + (this.buffer * 4);
+        activeCard.index = topCard.index;
+
+        topCard.parent.addChild(activeCard)
+      
+
+
+    },
     cardPlacedOnSlot: function (card) {
 
         let tempArray = this.piles[card.index];
