@@ -159,7 +159,8 @@ export default {
         temp.forEach ( (card, i) => {
             console.log(card.rank, card.suit)
             card.x = topCard.x;
-            card.y = topCard.y + ((i + 1) * (this.parent.buffer * 4));
+            let yAdjust = (topCard.marker) ? 0 : ((i +1) * (this.parent.buffer * 4));
+            card.y = topCard.y + yAdjust;
             this.parent.piles[card.index].splice(this.parent.piles[card.index].indexOf(card), 1)
             this.parent.piles[key].push(card);
             this.parent.container.addChild(card);
