@@ -51,7 +51,7 @@ export default {
             this.dragCont.addChild(arr[i]);
             yOffset++;
        }
-
+       
 
         this.stage.addChild(this.dragCont)
     },
@@ -60,14 +60,16 @@ export default {
         if (!this.activeCard) return;
 
         let activeCardObj = VARS.globalObject(this.activeCard);
+        console.log(activeCardObj)
 
          //SLOT CHECK
 
         let slotHitObject = this.slotHitListener(activeCardObj)
         let pileHitObject = this.movePileListener(activeCardObj)
          if (this.dragCont.children.length === 1 && slotHitObject.hit) {
-                let slot = slotHitObject.slot;
-                this.addCardToSlot(slot);
+                // console.log(slotHitObject.hit)
+                // let slot = slotHitObject.slot;
+                // this.addCardToSlot(slot);
          } else if (pileHitObject.hit) {
              console.log('pile hit');
              this.movePiles(pileHitObject.topCard, pileHitObject.key);
@@ -94,6 +96,7 @@ export default {
         for (let i = 0; i < 4; i ++) {
     
             let slotObj = VARS.globalObject(this.slots[i]); 
+
             if ( 
                 UTILS.rectangleRectangleCollisionDetection(slotObj, activeCardObj) &&
                 this.slots[i].rank === this.activeCard.rank &&

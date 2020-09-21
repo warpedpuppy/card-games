@@ -8,6 +8,7 @@ export default {
     suits: ["clubs", "diamonds", "hearts", "spades"],
     rank: ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"],
     globalObject: function (item) {
+        console.log(item.rank, item.suit)
         let activeCardGlobalPoint = item.getGlobalPosition(new PIXI.Point(item.x, item.y))
         return {
             x: item.x,
