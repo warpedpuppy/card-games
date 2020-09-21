@@ -11,6 +11,7 @@ export default {
     topDrawPileCard: undefined,
     flipPile: [],
     piles: {},
+    pileMarkers: [],
     init: function () {
         const app = new PIXI.Application({
             width: VARS.canvasWidth, height: VARS.canvasWidth, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1,
@@ -78,13 +79,20 @@ export default {
         tempArray.splice(tempArray.indexOf(card), 1)
 
         //FLIP TOP OF PILE
-         if (tempArray.length) {
-            let finalIndex = tempArray.length - 1;
-            let newTopCard = tempArray[finalIndex];
+        this.revealNextCard(tempArray);
+       
+
+    },
+    revealNextCard: function (arr) {
+        //FLIP TOP OF PILE
+
+        if (arr.length) {
+            let finalIndex = arr.length - 1;
+            let newTopCard = arr[finalIndex];
             newTopCard.reveal();
             DRAG.addDrag(newTopCard);
         }
-       
+        
 
     },
     solitaireDeal: function () {
@@ -95,6 +103,15 @@ export default {
         for (let i = 0; i < rows; i ++) {
 
             for (let j = 0; j < loopingQ; j ++) {
+                if (loopingQ === 7) {
+                    //make pile marker
+                    let marker = new PIXI.Graphics();
+                    marker.beginFill(0x000000).drawRect(0,0,VARS.cardWidth, VARS.cardHeight).endFill();
+                    marker.x = startX + (VARS.cardWidth + this.buffer) * j;
+                    marker.y = startY + (this.buffer * i);
+                    this.container.addChild(marker);
+                    this.pileMarkers.push(marker);
+                }
                 card = DECK.deck[cardCounter];
                 card.x = startX + (VARS.cardWidth + this.buffer) * j;
                 card.y = startY + (this.buffer * i);
