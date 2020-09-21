@@ -67,9 +67,9 @@ export default {
         let slotHitObject = this.slotHitListener(activeCardObj)
         let pileHitObject = this.movePileListener(activeCardObj)
          if (this.dragCont.children.length === 1 && slotHitObject.hit) {
-                // console.log(slotHitObject.hit)
-                // let slot = slotHitObject.slot;
-                // this.addCardToSlot(slot);
+                console.log(slotHitObject.hit)
+                let slot = slotHitObject.slot;
+                this.addCardToSlot(slot);
          } else if (pileHitObject.hit) {
              console.log('pile hit');
              this.movePiles(pileHitObject.topCard, pileHitObject.key);
