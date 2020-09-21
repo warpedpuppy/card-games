@@ -49,28 +49,35 @@ export default {
     switchCardPile: function (activeCard, topCard) {
 
 
-        //remove card from current pile
-        this.piles[activeCard.index].splice(this.piles[activeCard.index].indexOf(activeCard), 1)
+        // //remove card from current pile
+        // this.piles[activeCard.index].splice(this.piles[activeCard.index].indexOf(activeCard), 1)
 
-        //FLIP TOP OF PILE
-        let tempArray = this.piles[activeCard.index];
-        if (tempArray.length) {
-            let finalIndex = tempArray.length - 1;
-            let newTopCard = tempArray[finalIndex];
-            newTopCard.reveal();
-            DRAG.addDrag(newTopCard);
-        }
+        // //FLIP TOP OF PILE
+        // this.revealNextCard(this.piles[activeCard.index]);
+        // // let tempArray = this.piles[activeCard.index];
+        // // if (tempArray.length) {
+        // //     let finalIndex = tempArray.length - 1;
+        // //     let newTopCard = tempArray[finalIndex];
+        // //     newTopCard.reveal();
+        // //     DRAG.addDrag(newTopCard);
+        // // }
 
-        //add card to new pile
-        this.piles[topCard.index].push(activeCard);
-        activeCard.x = topCard.x;
-        activeCard.y = topCard.y + (this.buffer * 4);
-        activeCard.index = topCard.index;
+        // //add card to new pile
+        // this.piles[topCard.index].push(activeCard);
+        // activeCard.x = topCard.x;
+        // activeCard.y = topCard.y + (this.buffer * 4);
+        // activeCard.index = topCard.index;
 
-        topCard.parent.addChild(activeCard)
+        // topCard.parent.addChild(activeCard)
         
         
 
+    },
+    marker: function () {
+        let marker = new PIXI.Graphics();
+        marker.marker = true;
+        marker.beginFill(0x000000).drawRect(0,0,VARS.cardWidth, VARS.cardHeight).endFill();
+        return marker;
     },
     cardPlacedOnSlot: function (card) {
 
@@ -89,8 +96,11 @@ export default {
         if (arr.length) {
             let finalIndex = arr.length - 1;
             let newTopCard = arr[finalIndex];
-            newTopCard.reveal();
-            DRAG.addDrag(newTopCard);
+            if (!newTopCard.marker) {
+                newTopCard.reveal();
+                DRAG.addDrag(newTopCard);
+            }
+          
         }
         
 
@@ -100,18 +110,19 @@ export default {
         this.container.removeChildren();
         let loopingQ = 7, rows = 7, cardCounter = 0, startX = VARS.cardWidth + (this.buffer * 4), startY = VARS.cardHeight + (this.buffer * 4), card, objectIndex = 7;
         
+        for (let i = 0; i < 7; i++) {
+            let marker = new this.marker();
+            marker.index = i;
+            marker.x = startX + (VARS.cardWidth + this.buffer) * i;
+            marker.y = startY;
+            this.container.addChild(marker);
+            this.piles[i] = [marker]
+        }
+        
         for (let i = 0; i < rows; i ++) {
 
             for (let j = 0; j < loopingQ; j ++) {
-                if (loopingQ === 7) {
-                    //make pile marker
-                    let marker = new PIXI.Graphics();
-                    marker.beginFill(0x000000).drawRect(0,0,VARS.cardWidth, VARS.cardHeight).endFill();
-                    marker.x = startX + (VARS.cardWidth + this.buffer) * j;
-                    marker.y = startY + (this.buffer * i);
-                    this.container.addChild(marker);
-                    this.pileMarkers.push(marker);
-                }
+               
                 card = DECK.deck[cardCounter];
                 card.x = startX + (VARS.cardWidth + this.buffer) * j;
                 card.y = startY + (this.buffer * i);
@@ -121,12 +132,9 @@ export default {
                 //index is the key in the object for the piles of cards.  the values will be arrays of the cards in that pile
                 let index = (objectIndex - loopingQ) + j;
                 card.index = index;
-                //console.log(index, ": ", card.suit, card.rank)
-                if (!this.piles[index]) {
-                    this.piles[index] = [card]
-                } else {
-                    this.piles[index].push(card)
-                }
+
+                this.piles[index].push(card)
+                
                 if (j === 0) {
                     card.reveal();
                     DRAG.addDrag(card);
