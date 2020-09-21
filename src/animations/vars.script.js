@@ -15,7 +15,7 @@ export default {
             x: activeCardGlobalPoint.x,
             y: activeCardGlobalPoint.y,
             width: this.cardWidth,
-            height: this.cardWidth
+            height: this.cardHeight
         }
     }
 }

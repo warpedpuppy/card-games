@@ -60,18 +60,16 @@ export default {
         if (!this.activeCard) return;
 
         let activeCardObj = VARS.globalObject(this.activeCard);
-        console.log(activeCardObj)
+
 
          //SLOT CHECK
 
         let slotHitObject = this.slotHitListener(activeCardObj)
         let pileHitObject = this.movePileListener(activeCardObj)
          if (this.dragCont.children.length === 1 && slotHitObject.hit) {
-                console.log(slotHitObject.hit)
                 let slot = slotHitObject.slot;
                 this.addCardToSlot(slot);
          } else if (pileHitObject.hit) {
-             console.log('pile hit');
              this.movePiles(pileHitObject.topCard, pileHitObject.key);
          } else {
                 let tempArray = [...this.dragCont.children];
@@ -127,12 +125,11 @@ export default {
     movePileListener: function (activeCardObj) {
          //PILE TO PILE CHECK
          for (let key in this.parent.piles) {
-
-           
+            
             //test for piles with cards
            let topCard = this.parent.piles[key][this.parent.piles[key].length - 1]
            
-           if (!this.activeCard || !topCard || topCard === this.activeCard) continue;
+           if (!this.activeCard || !topCard || this.activeCard.index === key) continue;
 
            let topCardObj = VARS.globalObject(topCard); 
 
@@ -145,7 +142,11 @@ export default {
                 return {hit: true, topCard, key}
             
                 
-            } else if (topCard.marker) {
+            } else if (
+                topCard.marker &&
+                UTILS.rectangleRectangleCollisionDetection(topCardObj, activeCardObj)
+            ) {
+
                 return {hit: true, topCard, key}
                 
             }
