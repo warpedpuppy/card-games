@@ -1,5 +1,5 @@
 import UTILS from '../utils/utils';
-import VARS from '../vars.script';
+import VARS from '../utils/vars.script';
 export default {
     parent: undefined,
     piles: undefined,
@@ -49,7 +49,7 @@ export default {
            } else {
                isDrawPile = true;
                card.drawPile = false;
-              this.root.flipPile.splice(this.root.flipPile.indexOf(card), 1)
+              this.parent.drawPile.flipPile.splice(this.parent.drawPile.flipPile.indexOf(card), 1)
            }
            
            this.piles[key].push(card);

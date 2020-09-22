@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import VARS from './vars.script';
+import VARS from './utils/vars.script';
 import PileToPile from './card-movements/pile-to-pile';
 import PileToSlot from './card-movements/pile-to-slot';
 
@@ -10,9 +10,11 @@ export default {
     stage: undefined,
     parent: undefined,
     dragCont: new PIXI.Container(),
-    init: function (stage, parent) {
+    drawPile: undefined,
+    init: function (stage, parent, drawPile) {
         this.stage = stage;
         this.parent = parent;
+        this.drawPile = drawPile;
 
         PileToPile.init(this);
         PileToSlot.init(this)
@@ -28,7 +30,7 @@ export default {
 
 
         this.activeCard = e.target;
-        let arr = (!this.activeCard.drawPile) ? this.parent.piles[this.activeCard.index] : this.parent.flipPile;
+        let arr = (!this.activeCard.drawPile) ? this.parent.piles[this.activeCard.index] : this.drawPile.flipPile;
        
 
 

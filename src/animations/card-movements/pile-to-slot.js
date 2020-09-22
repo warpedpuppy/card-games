@@ -1,5 +1,5 @@
 import UTILS from '../utils/utils';
-import VARS from '../vars.script';
+import VARS from '../utils/vars.script';
 export default {
     root: undefined,
     parent: undefined,

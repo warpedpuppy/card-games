@@ -1,19 +1,15 @@
 import * as PIXI from 'pixi.js';
 import DECK from './deck.script';
 import DRAG from './drag.script';
-import VARS from './vars.script';
+import VARS from './utils/vars.script';
+import DRAWPILE from './drawPile.script';
 import TESTING from './utils/testing';
 export default {
  
     buffer: 10,
     deck: [],
-    drawPile: [],
-    topDrawPileCard: undefined,
-    flipPile: [],
     piles: {},
     pileMarkers: [],
-    topFlipPileCard: undefined,
-    resetDrawPileButton: undefined,
     init: function () {
         const app = new PIXI.Application({
             width: VARS.canvasWidth, height: VARS.canvasWidth, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1,
@@ -27,15 +23,14 @@ export default {
         
         app.ticker.add(this.ticker);
 
-        DRAG.init(app.stage, this);
+        DRAG.init(app.stage, this, DRAWPILE);
         DECK.init(VARS);
+        DRAWPILE.init(this, DRAG, VARS, TESTING);
 
         DECK.createDeck();
 
         this.solitaireDeal();
-        this.drawPileClickHandler = this.drawPileClickHandler.bind(this)
        
-
     },
     slot: function(suit) {
         const container = new PIXI.Container();
@@ -122,11 +117,11 @@ export default {
 
             startX += VARS.cardWidth + this.buffer;
         }
-        this.resetDrawPileButton = new this.marker();
-        this.resetDrawPileButton.x = 0;
-        this.resetDrawPileButton.y = startY;
-        this.container.addChild(this.resetDrawPileButton);
-        this.resetDrawPileButton.visible = false;
+        DRAWPILE.resetDrawPileButton = new this.marker();
+        DRAWPILE.resetDrawPileButton.x = 0;
+        DRAWPILE.resetDrawPileButton.y = startY;
+        this.container.addChild(DRAWPILE.resetDrawPileButton);
+        DRAWPILE.resetDrawPileButton.visible = false;
         
         for (let i = cardCounter; i < 52; i ++) {
             card = DECK.deck[i];
@@ -135,11 +130,11 @@ export default {
             this.container.addChild(card);
             startY += 1;
             card.drawPile = true;
-            this.drawPile.push(card);
+            DRAWPILE.drawPile.push(card);
         }
-        TESTING.printDeck(this.drawPile)
+        TESTING.printDeck(DRAWPILE.drawPile)
        this.topDrawPileCard = card;
-       this.topDrawPileCard.on("click", this.drawPileClickHandler.bind(this));
+       this.topDrawPileCard.on("click", DRAWPILE.drawPileClickHandler.bind(DRAWPILE));
 
         let slotCont = new PIXI.Container();
 
@@ -155,79 +150,7 @@ export default {
         this.container.y = 20;
 
     },
-    layout: function () {
-        let counter = 0;
-        for (let i = 0; i < 4; i ++) {
-            for (let j = 0; j < 13; j++) {
-                let card = DECK.deck[counter];
-                card.x = (VARS.cardWidth + this.buffer) * j;
-                card.y = (VARS.cardHeight + this.buffer) * i;
-                this.container.addChild(card);
-                counter ++;
-            }
-        }
-    },
-    drawPileClickHandler: function (e) {
-
-        if (this.topFlipPileCard && this.flipPile.indexOf(this.topFlipPileCard) !== -1) DRAG.removeDrag(this.topFlipPileCard);
-        this.topDrawPileCard.removeAllListeners();
-        let drawPile = this.drawPile;
-        let top3 = drawPile.splice(-3).reverse(), card;
-        TESTING.printDeck(top3)
-
-        for (let i = 0; i < top3.length; i ++) {
-            card  = top3[i];
-            card.reveal();
-            this.container.removeChild(card);
-            this.container.addChild(card)
-            card.y += VARS.cardHeight + 20;
-        }
-        this.topFlipPileCard = card;
-       
-
-        this.flipPile = [...this.flipPile, ...top3];
-        
-        if (this.drawPile.length === 0) {
-            this.resetDrawPileButton.visible = true;
-            this.resetDrawPileButton.interactive = true;
-            this.resetDrawPileButton.buttonMode = true;
-            this.resetDrawPileButton.on("click", this.resetDrawPileHandler.bind(this))
-        } else {
-            DRAG.addDrag(this.topFlipPileCard);
-            this.nextCardEmpower();
-        }
-        
-
-
-        
-    },
-    resetDrawPileHandler: function () {
-
-        this.resetDrawPileButton.visible = false;
-        this.resetDrawPileButton.interactive = false;
-        this.resetDrawPileButton.buttonMode = false;
-        this.resetDrawPileButton.removeAllListeners();
-        this.drawPile = [...this.flipPile].reverse();
-        let startY = VARS.cardHeight + (this.buffer * 4);
-        let c;
-        this.drawPile.forEach( card => {
-            card.cover();
-            card.removeAllListeners();
-            card.x = 0;
-            card.y = startY;
-            startY += 1;
-            this.container.addChild(card);
-            c = card;
-        })
-        console.log('print deck: ', this.drawPile.length)
-        TESTING.printDeck(this.drawPile)
-        this.topDrawPileCard = c;
-        this.topDrawPileCard.on("click", this.drawPileClickHandler.bind(this));
-        this.flipPile = [];
-    },
-    nextCardEmpower: function () {
-        if(this.drawPile.length) this.drawPile[this.drawPile.length - 1].on("click", this.drawPileClickHandler);
-    },
+   
     ticker: function(delta) {
 
     }
