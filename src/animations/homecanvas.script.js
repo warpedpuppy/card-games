@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import DECK from './deck.script';
 import DRAG from './drag.script';
 import VARS from './vars.script';
-
+import TESTING from './utils/testing';
 export default {
  
     buffer: 10,
@@ -12,6 +12,8 @@ export default {
     flipPile: [],
     piles: {},
     pileMarkers: [],
+    topFlipPileCard: undefined,
+    resetDrawPileButton: undefined,
     init: function () {
         const app = new PIXI.Application({
             width: VARS.canvasWidth, height: VARS.canvasWidth, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1,
@@ -45,33 +47,6 @@ export default {
         container.rank = 1;
         container.addChild(graphics)
         return container;
-    },
-    switchCardPile: function (activeCard, topCard) {
-
-
-        // //remove card from current pile
-        // this.piles[activeCard.index].splice(this.piles[activeCard.index].indexOf(activeCard), 1)
-
-        // //FLIP TOP OF PILE
-        // this.revealNextCard(this.piles[activeCard.index]);
-        // // let tempArray = this.piles[activeCard.index];
-        // // if (tempArray.length) {
-        // //     let finalIndex = tempArray.length - 1;
-        // //     let newTopCard = tempArray[finalIndex];
-        // //     newTopCard.reveal();
-        // //     DRAG.addDrag(newTopCard);
-        // // }
-
-        // //add card to new pile
-        // this.piles[topCard.index].push(activeCard);
-        // activeCard.x = topCard.x;
-        // activeCard.y = topCard.y + (this.buffer * 4);
-        // activeCard.index = topCard.index;
-
-        // topCard.parent.addChild(activeCard)
-        
-        
-
     },
     marker: function () {
         let marker = new PIXI.Graphics();
@@ -147,15 +122,22 @@ export default {
 
             startX += VARS.cardWidth + this.buffer;
         }
+        this.resetDrawPileButton = new this.marker();
+        this.resetDrawPileButton.x = 0;
+        this.resetDrawPileButton.y = startY;
+        this.container.addChild(this.resetDrawPileButton);
+        this.resetDrawPileButton.visible = false;
+        
         for (let i = cardCounter; i < 52; i ++) {
             card = DECK.deck[i];
             card.x = 0;
             card.y = startY;
             this.container.addChild(card);
-            startY += 1
+            startY += 1;
+            card.drawPile = true;
             this.drawPile.push(card);
         }
-
+        TESTING.printDeck(this.drawPile)
        this.topDrawPileCard = card;
        this.topDrawPileCard.on("click", this.drawPileClickHandler.bind(this));
 
@@ -186,23 +168,64 @@ export default {
         }
     },
     drawPileClickHandler: function (e) {
-        this.topDrawPileCard.off("click", this.drawPileClickHandler);
+
+        if (this.topFlipPileCard && this.flipPile.indexOf(this.topFlipPileCard) !== -1) DRAG.removeDrag(this.topFlipPileCard);
+        this.topDrawPileCard.removeAllListeners();
         let drawPile = this.drawPile;
-        let top3 = drawPile.splice(-3).reverse();
+        let top3 = drawPile.splice(-3).reverse(), card;
+        TESTING.printDeck(top3)
 
         for (let i = 0; i < top3.length; i ++) {
-            top3[i].reveal();
-            this.container.removeChild(top3[i]);
-            this.container.addChild(top3[i])
-            top3[i].y += VARS.cardHeight + 20;
+            card  = top3[i];
+            card.reveal();
+            this.container.removeChild(card);
+            this.container.addChild(card)
+            card.y += VARS.cardHeight + 20;
         }
+        this.topFlipPileCard = card;
+       
 
         this.flipPile = [...this.flipPile, ...top3];
         
-        this.nextCardEmpower();
+        if (this.drawPile.length === 0) {
+            this.resetDrawPileButton.visible = true;
+            this.resetDrawPileButton.interactive = true;
+            this.resetDrawPileButton.buttonMode = true;
+            this.resetDrawPileButton.on("click", this.resetDrawPileHandler.bind(this))
+        } else {
+            DRAG.addDrag(this.topFlipPileCard);
+            this.nextCardEmpower();
+        }
+        
+
+
         
     },
-    nextCardEmpower: function (){
+    resetDrawPileHandler: function () {
+
+        this.resetDrawPileButton.visible = false;
+        this.resetDrawPileButton.interactive = false;
+        this.resetDrawPileButton.buttonMode = false;
+        this.resetDrawPileButton.removeAllListeners();
+        this.drawPile = [...this.flipPile].reverse();
+        let startY = VARS.cardHeight + (this.buffer * 4);
+        let c;
+        this.drawPile.forEach( card => {
+            card.cover();
+            card.removeAllListeners();
+            card.x = 0;
+            card.y = startY;
+            startY += 1;
+            this.container.addChild(card);
+            c = card;
+        })
+        console.log('print deck: ', this.drawPile.length)
+        TESTING.printDeck(this.drawPile)
+        this.topDrawPileCard = c;
+        this.topDrawPileCard.on("click", this.drawPileClickHandler.bind(this));
+        this.flipPile = [];
+    },
+    nextCardEmpower: function () {
         if(this.drawPile.length) this.drawPile[this.drawPile.length - 1].on("click", this.drawPileClickHandler);
     },
     ticker: function(delta) {

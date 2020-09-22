@@ -28,7 +28,7 @@ export default {
 
 
         this.activeCard = e.target;
-        let arr = this.parent.piles[this.activeCard.index];
+        let arr = (!this.activeCard.drawPile) ? this.parent.piles[this.activeCard.index] : this.parent.flipPile;
        
 
 

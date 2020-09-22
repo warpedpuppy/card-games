@@ -14,11 +14,9 @@ export default {
                 this.deck.push(card);
             }
         }
-       
+        this.shuffle();
     },
     shuffle: function () {
-        this.container.removeChildren();
         this.deck = _.shuffle(this.deck);
-        this.layout();
     },
 }
