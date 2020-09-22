@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js';
-import UTILS from '../utils/utils';
 import VARS from './vars.script';
+import PileToPile from './card-movements/pile-to-pile';
+import PileToSlot from './card-movements/pile-to-slot';
+
 export default {
     slots: [],
     activeCard: undefined,
@@ -11,6 +13,9 @@ export default {
     init: function (stage, parent) {
         this.stage = stage;
         this.parent = parent;
+
+        PileToPile.init(this);
+        PileToSlot.init(this)
 
         this.testCard = new PIXI.Graphics();
         this.testCard.beginFill(0x996600).drawRect(0,0,100, 150).endFill();
@@ -64,13 +69,13 @@ export default {
 
          //SLOT CHECK
 
-        let slotHitObject = this.slotHitListener(activeCardObj)
-        let pileHitObject = this.movePileListener(activeCardObj)
+        let slotHitObject = PileToSlot.slotHitListener(activeCardObj)
+        let pileHitObject = PileToPile.movePileListener(activeCardObj, this.activeCard)
          if (this.dragCont.children.length === 1 && slotHitObject.hit) {
                 let slot = slotHitObject.slot;
-                this.addCardToSlot(slot);
+                PileToSlot.addCardToSlot(slot);
          } else if (pileHitObject.hit) {
-             this.movePiles(pileHitObject.topCard, pileHitObject.key);
+            PileToPile.movePiles(pileHitObject.topCard, pileHitObject.key);
          } else {
                 let tempArray = [...this.dragCont.children];
                 tempArray.forEach( card => {
@@ -79,40 +84,10 @@ export default {
                     card.storeParent.addChild(card)
                 })
          }
-        
-
-
-
-        
-        
         this.dragCont.dragging = false;
         this.dragCont.data = null;
         this.activeCard = undefined;
         this.stage.removeChild(this.dragCont);
-    },
-    slotHitListener: function (activeCardObj) {
-        for (let i = 0; i < 4; i ++) {
-    
-            let slotObj = VARS.globalObject(this.slots[i]); 
-
-            if ( 
-                UTILS.rectangleRectangleCollisionDetection(slotObj, activeCardObj) &&
-                this.slots[i].rank === this.activeCard.rank &&
-                this.slots[i].suit === this.activeCard.suit
-            ) {
-                return { hit: true, slot: this.slots[i]};
-            }
-        }
-        return {hit: false, slot: undefined};
-    },
-    addCardToSlot: function (slot) {
-        this.removeDrag(this.activeCard);
-        let destinationParent = slot.parent;
-        destinationParent.addChild(this.activeCard);
-        this.activeCard.x = slot.x;
-        this.activeCard.y = slot.y;
-        this.parent.cardPlacedOnSlot(this.activeCard);
-        slot.rank ++;
     },
     onDragMove: function (e) {
 
@@ -121,55 +96,6 @@ export default {
             this.dragCont.x = newPosition.x - this.dragCont.adjustX;
             this.dragCont.y = newPosition.y - this.dragCont.adjustY;
         }
-    },
-    movePileListener: function (activeCardObj) {
-         //PILE TO PILE CHECK
-         for (let key in this.parent.piles) {
-            
-            //test for piles with cards
-           let topCard = this.parent.piles[key][this.parent.piles[key].length - 1]
-           
-           if (!this.activeCard || !topCard || this.activeCard.index === key) continue;
-
-           let topCardObj = VARS.globalObject(topCard); 
-
-            if ( 
-                topCard.color !== this.activeCard.color && 
-                topCard.rank === (this.activeCard.rank + 1) &&
-                UTILS.rectangleRectangleCollisionDetection(topCardObj, activeCardObj)
-            ) {
-                console.log('top card hit');
-                return {hit: true, topCard, key}
-            
-                
-            } else if (
-                topCard.marker &&
-                UTILS.rectangleRectangleCollisionDetection(topCardObj, activeCardObj)
-            ) {
-
-                return {hit: true, topCard, key}
-                
-            }
-          
-        }
-        return {hit: false}
-    },
-    movePiles: function (topCard, key) {
-        let storeIndex = this.activeCard.index;
-        let temp = [...this.dragCont.children]
-        temp.forEach ( (card, i) => {
-            console.log(card.rank, card.suit)
-            card.x = topCard.x;
-            let yAdjust = (topCard.marker) ? 0 : ((i +1) * (this.parent.buffer * 4));
-            card.y = topCard.y + yAdjust;
-            this.parent.piles[card.index].splice(this.parent.piles[card.index].indexOf(card), 1)
-            this.parent.piles[key].push(card);
-            this.parent.container.addChild(card);
-            card.index = key;
-        })
-
-       // this.activeCard = undefined;
-        this.parent.revealNextCard(this.parent.piles[storeIndex])
     },
     addDrag: function (item) {
         item
