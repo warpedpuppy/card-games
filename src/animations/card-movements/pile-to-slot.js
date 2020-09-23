@@ -3,9 +3,11 @@ import VARS from '../utils/vars.script';
 export default {
     root: undefined,
     parent: undefined,
-    init: function (parent) {
+    drawPile: undefined,
+    init: function (parent, drawPile) {
         this.parent = parent;
         this.root = parent.parent;
+        this.drawPile = drawPile;
     },
     slotHitListener: function (activeCardObj) {
         for (let i = 0; i < 4; i ++) {
@@ -28,11 +30,13 @@ export default {
         destinationParent.addChild(this.parent.activeCard);
         this.parent.activeCard.x = slot.x;
         this.parent.activeCard.y = slot.y;
-        this.root.cardPlacedOnSlot(this.parent.activeCard);
+        console.log(this.root, this.root.piles, this.parent.activeCard.drawPile)
+        let tempArray = (!this.parent.activeCard.drawPile) ? this.root.piles[this.parent.activeCard.index] : this.drawPile.flipPile;
+        //REMOVE FROM PILE
+        tempArray.splice(tempArray.indexOf(this.parent.activeCard), 1)
+        //this.cardPlacedOnSlot(this.parent.activeCard);
         slot.rank ++;
-    },
-
-
-
+        this.root.revealNextCard(tempArray);
+    }
 
 }

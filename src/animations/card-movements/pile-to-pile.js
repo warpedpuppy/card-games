@@ -10,7 +10,7 @@ export default {
         this.parent = parent;
         this.root = this.parent.parent;
         this.piles = this.parent.parent.piles;
-        this.container = this.parent.parent.container;
+        console.log(this.parent.parent)
     },
     movePileListener: function (activeCardObj, activeCard) {
         this.activeCard = activeCard;
@@ -53,7 +53,7 @@ export default {
            }
            
            this.piles[key].push(card);
-           this.container.addChild(card);
+           this.root.container.addChild(card);
            card.index = key;
        })
 

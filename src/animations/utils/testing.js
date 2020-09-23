@@ -5,5 +5,8 @@ export default {
             str += `${card.rank}, ${card.suit} | `
         })
         console.log(str)
+    },
+    indexListeners: function () {
+        
     }
 }

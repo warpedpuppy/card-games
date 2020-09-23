@@ -36,14 +36,15 @@ export default {
        
 
         this.flipPile = [...this.flipPile, ...top3];
-        
+
+        this.drag.addDrag(this.topFlipPileCard);
+
         if (this.drawPile.length === 0) {
             this.resetDrawPileButton.visible = true;
             this.resetDrawPileButton.interactive = true;
             this.resetDrawPileButton.buttonMode = true;
             this.resetDrawPileButton.on("click", this.resetDrawPileHandler.bind(this))
         } else {
-            this.drag.addDrag(this.topFlipPileCard);
             this.nextCardEmpower();
         }
         

@@ -17,7 +17,7 @@ export default {
         this.drawPile = drawPile;
 
         PileToPile.init(this);
-        PileToSlot.init(this)
+        PileToSlot.init(this, drawPile)
 
         this.testCard = new PIXI.Graphics();
         this.testCard.beginFill(0x996600).drawRect(0,0,100, 150).endFill();
