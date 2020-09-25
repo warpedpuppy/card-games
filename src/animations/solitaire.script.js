@@ -1,8 +1,8 @@
 import SLOT from './slot.script';
-import DRAG from './drag.script';
-import DRAWPILE from './drawPile.script';
+import DRAG from './card-movements/drag.script';
+import DRAWPILE from './card-movements/drawPile.script';
 import MARKER from './marker.script';
-
+import ListenerManager from './card-movements/listener-manager';
 export default {
     buffer: 10,
     deck: [],
@@ -15,7 +15,7 @@ export default {
         this.obj = obj;
 
         DRAG.init(obj.app.stage, this, DRAWPILE);
-        DRAWPILE.init(this, DRAG, obj);
+        DRAWPILE.init(this, DRAG, obj, ListenerManager);
         SLOT.init(obj.VARS);
         MARKER.init(obj.VARS);
 
@@ -110,8 +110,9 @@ export default {
         }
        this.obj.TESTING.printDeck(DRAWPILE.drawPile)
        this.topDrawPileCard = card;
-       this.topDrawPileCard.makeInteractive(true)
-       this.topDrawPileCard.on("click", DRAWPILE.drawPileClickHandler.bind(DRAWPILE));
+
+       ListenerManager.addFlip(this.topDrawPileCard);
+     
     },
     revealNextCard: function (arr) {
         //FLIP TOP OF PILE

@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
-import VARS from './utils/vars.script';
-import PileToPile from './card-movements/pile-to-pile';
-import PileToSlot from './card-movements/pile-to-slot';
+import VARS from '../utils/vars.script';
+import PileToPile from './pile-to-pile';
+import PileToSlot from './pile-to-slot';
 
 export default {
     slots: [],
