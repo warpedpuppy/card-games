@@ -100,6 +100,7 @@ export default {
         }
     },
     addDrag: function (item) {
+        item.makeInteractive(true)
         item
         .on('pointerdown', this.onDragStart.bind(this))
         .on('pointerup', this.onDragEnd.bind(this))
@@ -109,8 +110,8 @@ export default {
         item.hasDrag = true;
     },
     removeDrag: function (item) {
-       // console.log(item.rank, item.suit, this)
         item.removeAllListeners();
+        item.makeInteractive(false)
         item.hasDrag = false;
     }
 }

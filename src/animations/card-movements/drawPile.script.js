@@ -8,12 +8,11 @@ export default {
     resetDrawPileButton: undefined,
     drag: undefined,
     testing: undefined,
-    init: function (parent, drag, obj, ListenerManager) {
+    init: function (parent, drag, obj) {
         this.parent = parent;
         this.drag = drag;
         this.vars = obj.VARS;
         this.testing = obj.TESTING;
-        this.ListenerManager = ListenerManager;
     },
     drawPileClickHandler: function (e) {
 
@@ -24,7 +23,7 @@ export default {
         for (let i = 0; i < top3.length; i ++) {
             card  = top3[i];
             card.reveal(true);
-            card.removeAllListeners();
+            ListenerManager.removeAllListeners(card)
             this.parent.container.addChild(card)
             card.y += this.vars.cardHeight + 20;
         }
@@ -32,24 +31,17 @@ export default {
         this.flipPile = [...this.flipPile, ...top3];
 
         this.topFlipPileCard = card;
-        this.topFlipPileCard.makeInteractive(true)
-        this.drag.addDrag(this.topFlipPileCard);
+        ListenerManager.addDrag(this.topFlipPileCard);
 
         if (this.drawPile.length === 0) {
-            ListenerManager.resetFlip(this.resetDrawPileButton); 
+            ListenerManager.addResetFlip(this.resetDrawPileButton); 
         } else {
-            this.nextCardEmpower();
+            let topCard = this.drawPile[this.drawPile.length - 1];
+            ListenerManager.addFlip(topCard);
         }
     
     },
-    nextCardEmpower: function () {
-        if(this.drawPile.length) {
-            let topCard = this.drawPile[this.drawPile.length - 1];
-            this.ListenerManager.addFlip(topCard);
-        }
-    },
     resetDrawPileHandler: function (e) {
-
 
         ListenerManager.removeResetFlip(this.resetDrawPileButton);
 
@@ -59,7 +51,7 @@ export default {
        
         this.drawPile.forEach( card => {
             card.reveal(false);
-            card.removeAllListeners();
+            ListenerManager.removeAllListeners(card)
             card.x = 0;
             card.y = startY;
             startY += 1;
@@ -68,7 +60,7 @@ export default {
         })
         this.testing.printDeck(this.drawPile)
         this.topDrawPileCard = c;
-        this.topDrawPileCard.on("click", this.drawPileClickHandler.bind(this));
+        ListenerManager.addFlip(this.topDrawPileCard);
         this.flipPile = [];
     },
 

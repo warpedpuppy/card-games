@@ -62,7 +62,7 @@ export default {
                 if (j === 0) {
                     card.reveal(true);
                     card.makeInteractive(true)
-                    DRAG.addDrag(card);
+                    ListenerManager.addDrag(card);
                 }
             }
             
@@ -122,7 +122,7 @@ export default {
             let newTopCard = arr[finalIndex];
             if (!newTopCard.marker) {
                 newTopCard.reveal();
-                DRAG.addDrag(newTopCard);
+                ListenerManager.addDrag(newTopCard);
             }
           
         }

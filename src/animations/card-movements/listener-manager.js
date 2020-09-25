@@ -4,11 +4,17 @@ export default class ListenerManager {
 
     static listenerTracker = [];
 
-    addDrag (card) {
+    static removeAllListeners (item) {
+        while (this.listenerTracker.indexOf(item) !== -1) {
+            this.listenerTracker.splice(this.listenerTracker.indexOf(item), 1);
+        }
+        item.removeAllListeners();
+    }
+    static addDrag (card) {
         DRAG.addDrag(card)
         this.listenerTracker.push(card)
     }
-    removeDrag (card) {
+    static removeDrag (card) {
         DRAG.remove(card)
         this.listenerTracker.splice(this.listenerTracker.indexOf(card), 1)
     }
