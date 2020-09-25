@@ -6,7 +6,13 @@ export default {
         })
         console.log(str)
     },
-    indexListeners: function () {
-        
+    howManyListeners: function (arr) {
+        arr.forEach( card => {
+            if (!card.interactive) {
+                console.log('no listener')
+            } else {
+                console.log('listener')
+            }
+        })
     }
 }

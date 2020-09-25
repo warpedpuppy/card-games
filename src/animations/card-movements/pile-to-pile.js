@@ -18,11 +18,11 @@ export default {
         for (let key in this.piles) {
            
            //test for piles with cards
-          let topCard = this.piles[key][this.piles[key].length - 1]
+          let topCard = this.piles[key][this.piles[key].length - 1];
           
           if (!this.activeCard || !topCard || activeCard.index === key) continue;
 
-          let topCardObj = VARS.globalObject(topCard); 
+          let topCardObj = VARS.globalObject(topCard.returnCard()); 
 
           let alternatingSuitAndOneLower = (topCard.color !== activeCard.color && topCard.rank === (activeCard.rank + 1)) ? true : false;
 

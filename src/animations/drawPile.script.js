@@ -5,20 +5,23 @@ export default {
     topFlipPileCard: undefined,
     resetDrawPileButton: undefined,
     drag: undefined,
-    init: function (parent, drag, vars, testing) {
+    testing: undefined,
+    init: function (parent, drag, obj) {
         this.parent = parent;
         this.drag = drag;
-        this.vars = vars;
-        this.testing = testing;
+        console.log()
+        this.vars = obj.VARS;
+        this.testing = obj.TESTING;
     },
     drawPileClickHandler: function (e) {
 
+        this.testing.howManyListeners(this.drawPile)
+
         if (this.topFlipPileCard && this.flipPile.indexOf(this.topFlipPileCard) !== -1) {
-            
+
             this.drag.removeDrag(this.topFlipPileCard);
         }
 
-        //if (this.topFlipPileCard) this.topDrawPileCard.removeAllListeners();  //WHY THIS?
 
 
         let drawPile = this.drawPile;
@@ -27,22 +30,22 @@ export default {
 
         for (let i = 0; i < top3.length; i ++) {
             card  = top3[i];
-            card.reveal();
+            card.reveal(true);
+            card.returnCard().removeAllListeners();
             //this.parent.container.removeChild(card);
-            this.parent.container.addChild(card)
-            card.y += this.vars.cardHeight + 20;
+            this.parent.container.addChild(card.returnCard())
+            card.returnCard().y += this.vars.cardHeight + 20;
         }
         this.topFlipPileCard = card;
        
 
         this.flipPile = [...this.flipPile, ...top3];
-
+        this.topFlipPileCard.makeInteractive(true)
         this.drag.addDrag(this.topFlipPileCard);
 
         if (this.drawPile.length === 0) {
             this.resetDrawPileButton.visible = true;
-            this.resetDrawPileButton.interactive = true;
-            this.resetDrawPileButton.buttonMode = true;
+            this.resetDrawPileButton.interactive = this.resetDrawPileButton.buttonMode = true;
             this.resetDrawPileButton.on("click", this.resetDrawPileHandler.bind(this))
         } else {
             this.nextCardEmpower();
@@ -51,6 +54,13 @@ export default {
 
 
         
+    },
+    nextCardEmpower: function () {
+        if(this.drawPile.length) {
+            let topCard = this.drawPile[this.drawPile.length - 1];
+            topCard.makeInteractive(true)
+            topCard.returnCard().on("click", this.drawPileClickHandler.bind(this));
+        }
     },
     resetDrawPileHandler: function (e) {
 
@@ -63,22 +73,20 @@ export default {
         let c;
        
         this.drawPile.forEach( card => {
-            card.cover();
-            card.removeAllListeners();
-            card.x = 0;
-            card.y = startY;
+            card.reveal(false);
+            card.returnCard().removeAllListeners();
+            card.returnCard().x = 0;
+            card.returnCard().y = startY;
             startY += 1;
-            this.parent.container.addChild(card);
+            this.parent.container.addChild(card.returnCard());
             c = card;
         })
         this.testing.printDeck(this.drawPile)
         this.topDrawPileCard = c;
-        this.topDrawPileCard.on("click", this.drawPileClickHandler.bind(this));
+        this.topDrawPileCard.returnCard().on("click", this.drawPileClickHandler.bind(this));
         this.flipPile = [];
     },
-    nextCardEmpower: function () {
-        if(this.drawPile.length) this.drawPile[this.drawPile.length - 1].on("click", this.drawPileClickHandler.bind(this));
-    },
+   
 
 
 }

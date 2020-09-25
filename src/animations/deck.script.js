@@ -1,16 +1,17 @@
-import CARD from './card.script';
+// import CARD from './card.script';
+import CARD from './card.class';
 import _ from 'lodash';
 import VARS from './utils/vars.script';
 export default {
     deck: [],
     init: function (vars) {
-        CARD.init(vars)
+        //CARD.init(vars)
     },
     createDeck: function () {
         
         for (let i = 0; i < 4; i ++) {
             for (let j = 0; j < 13; j++) {
-                let card = CARD.create(j, i);
+                let card = new CARD(j, i, VARS);
                 card.this = this;
                 this.deck.push(card);
             }
@@ -27,6 +28,7 @@ export default {
                 let card = this.deck[counter];
                 card.x = (VARS.cardWidth + this.buffer) * j;
                 card.y = (VARS.cardHeight + this.buffer) * i;
+
                 this.container.addChild(card);
                 counter ++;
             }

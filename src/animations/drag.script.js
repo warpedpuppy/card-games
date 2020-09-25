@@ -30,7 +30,7 @@ export default {
 
 
         this.activeCard = e.target;
-        let arr = (!this.activeCard.drawPile) ? this.parent.piles[this.activeCard.index] : this.drawPile.flipPile;
+        let arr = (!this.activeCard.classRef.drawPile) ? this.parent.piles[this.activeCard.index] : this.drawPile.flipPile;
        
 
 
@@ -48,14 +48,14 @@ export default {
         this.dragCont.dragging = true;
         this.activeCard.storePos = {x: this.activeCard.x, y: this.activeCard.y};
         
-       
-       let activeCardIndex = arr.indexOf(this.activeCard), yOffset = 0;
+       console.log("arr ", arr) 
+       let activeCardIndex = arr.indexOf(this.activeCard.classRef), yOffset = 0;
        for (let i = activeCardIndex; i < arr.length; i++) {
             arr[i].storeParent = arr[i].parent;
             arr[i].storePos = {x: arr[i].x, y: arr[i].y};
             arr[i].x = 0;
             arr[i].y = yOffset * 40;
-            this.dragCont.addChild(arr[i]);
+            this.dragCont.addChild(arr[i].returnCard());
             yOffset++;
        }
        
@@ -100,7 +100,7 @@ export default {
         }
     },
     addDrag: function (item) {
-        item
+        item.returnCard()
         .on('pointerdown', this.onDragStart.bind(this))
         .on('pointerup', this.onDragEnd.bind(this))
         .on('pointerupoutside', this.onDragEnd.bind(this))
@@ -110,7 +110,7 @@ export default {
     },
     removeDrag: function (item) {
        // console.log(item.rank, item.suit, this)
-        item.removeAllListeners();
+        item.returnCard().removeAllListeners();
         item.hasDrag = false;
     }
 }
