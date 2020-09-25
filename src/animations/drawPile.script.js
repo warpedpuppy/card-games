@@ -14,11 +14,8 @@ export default {
     drawPileClickHandler: function (e) {
 
         if (this.topFlipPileCard && this.flipPile.indexOf(this.topFlipPileCard) !== -1) {
-            
             this.drag.removeDrag(this.topFlipPileCard);
         }
-
-        //if (this.topFlipPileCard) this.topDrawPileCard.removeAllListeners();  //WHY THIS?
 
 
         let drawPile = this.drawPile;
