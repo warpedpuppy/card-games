@@ -5,6 +5,8 @@ import MARKER from './marker.script';
 import ListenerManager from './card-movements/listener-manager';
 export default {
     buffer: 10,
+    buffer_larger: 40,
+    slot_spacer: 100,
     deck: [],
     piles: {},
     pileMarkers: [],
@@ -26,14 +28,15 @@ export default {
 
         this.container.removeChildren();
         let cardCounter = 0, 
-            startX = this.obj.VARS.cardWidth + (this.buffer * 4), 
-            startY = this.obj.VARS.cardHeight + (this.buffer * 4), 
+            startX = this.obj.VARS.cardWidth + this.buffer_larger, 
+            startY = this.obj.VARS.cardHeight + this.buffer_larger, 
             card, 
             loopingQ = 7,
             rows = loopingQ,
             totalColumns = loopingQ;
         
-        for (let i = 0; i < 7; i++) {
+       // CREATE CARD PILES
+       for (let i = 0; i < 7; i++) {
             let marker = MARKER.build();
             marker.index = i;
             marker.x = startX + (this.obj.VARS.cardWidth + this.buffer) * i;
@@ -41,10 +44,10 @@ export default {
             this.container.addChild(marker);
             this.piles[i] = [marker]
         }
-        
+    
         for (let i = 0; i < rows; i ++) {
             for (let j = 0; j < loopingQ; j ++) {
-               
+            
                 card = this.obj.DECK.deck[cardCounter];
                 card.x = startX + (this.obj.VARS.cardWidth + this.buffer) * j;
                 card.y = startY + (this.buffer * i);
@@ -80,7 +83,7 @@ export default {
 
         for (let i = 0; i < 4; i++) {
             let slot = SLOT.build(this.obj.VARS.suits[i]);
-            slot.x = (this.obj.VARS.cardWidth +( this.buffer * 15)) * i;
+            slot.x = (this.obj.VARS.cardWidth + this.slot_spacer) * i;
             DRAG.addSlot(slot);
             slotCont.addChild(slot);
         }
@@ -90,6 +93,7 @@ export default {
         this.container.y = 20;
 
     },
+ 
     createDrawPileResetButton: function (startY) {
         DRAWPILE.resetDrawPileButton = MARKER.build();
         DRAWPILE.resetDrawPileButton.x = 0;
