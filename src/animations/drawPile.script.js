@@ -31,10 +31,10 @@ export default {
         for (let i = 0; i < top3.length; i ++) {
             card  = top3[i];
             card.reveal(true);
-            card.returnCard().removeAllListeners();
+            card.removeAllListeners();
             //this.parent.container.removeChild(card);
-            this.parent.container.addChild(card.returnCard())
-            card.returnCard().y += this.vars.cardHeight + 20;
+            this.parent.container.addChild(card)
+            card.y += this.vars.cardHeight + 20;
         }
         this.topFlipPileCard = card;
        
@@ -59,7 +59,7 @@ export default {
         if(this.drawPile.length) {
             let topCard = this.drawPile[this.drawPile.length - 1];
             topCard.makeInteractive(true)
-            topCard.returnCard().on("click", this.drawPileClickHandler.bind(this));
+            topCard.on("click", this.drawPileClickHandler.bind(this));
         }
     },
     resetDrawPileHandler: function (e) {
@@ -74,16 +74,16 @@ export default {
        
         this.drawPile.forEach( card => {
             card.reveal(false);
-            card.returnCard().removeAllListeners();
-            card.returnCard().x = 0;
-            card.returnCard().y = startY;
+            card.removeAllListeners();
+            card.x = 0;
+            card.y = startY;
             startY += 1;
-            this.parent.container.addChild(card.returnCard());
+            this.parent.container.addChild(card);
             c = card;
         })
         this.testing.printDeck(this.drawPile)
         this.topDrawPileCard = c;
-        this.topDrawPileCard.returnCard().on("click", this.drawPileClickHandler.bind(this));
+        this.topDrawPileCard.on("click", this.drawPileClickHandler.bind(this));
         this.flipPile = [];
     },
    

@@ -22,7 +22,7 @@ export default {
           
           if (!this.activeCard || !topCard || activeCard.index === key) continue;
 
-          let topCardObj = VARS.globalObject(topCard.returnCard()); 
+          let topCardObj = VARS.globalObject(topCard); 
 
           let alternatingSuitAndOneLower = (topCard.color !== activeCard.color && topCard.rank === (activeCard.rank + 1)) ? true : false;
 

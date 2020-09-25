@@ -48,7 +48,7 @@ export default {
                 card = this.obj.DECK.deck[cardCounter];
                 card.x = startX + (this.obj.VARS.cardWidth + this.buffer) * j;
                 card.y = startY + (this.buffer * i);
-                this.container.addChild(card.returnCard());
+                this.container.addChild(card);
                 cardCounter ++;
 
                 //index is the key in the object for the piles of cards.  the values will be arrays of the cards in that pile
@@ -60,7 +60,8 @@ export default {
                 this.piles[index].push(card)
                 
                 if (j === 0) {
-                    card.reveal();
+                    card.reveal(true);
+                    card.makeInteractive(true)
                     DRAG.addDrag(card);
                 }
             }
@@ -100,9 +101,9 @@ export default {
         let card;
         for (let i = cardCounter; i < 52; i ++) {
             card = this.obj.DECK.deck[i];
-            card.returnCard().x = 0;
-            card.returnCard().y = startY;
-            this.container.addChild(card.returnCard());
+            card.x = 0;
+            card.y = startY;
+            this.container.addChild(card);
             startY += 1;
             card.isDrawPile(true);
             DRAWPILE.drawPile.push(card);
@@ -110,7 +111,7 @@ export default {
        this.obj.TESTING.printDeck(DRAWPILE.drawPile)
        this.topDrawPileCard = card;
        this.topDrawPileCard.makeInteractive(true)
-       this.topDrawPileCard.returnCard().on("click", DRAWPILE.drawPileClickHandler.bind(DRAWPILE));
+       this.topDrawPileCard.on("click", DRAWPILE.drawPileClickHandler.bind(DRAWPILE));
     },
     revealNextCard: function (arr) {
         //FLIP TOP OF PILE

@@ -3,6 +3,7 @@ import DECK from './deck.script';
 import VARS from './utils/vars.script';
 import TESTING from './utils/testing';
 import SOLITARE from './solitaire.script';
+import CARD from './card.class';
 export default {
     init: function () {
 
@@ -17,6 +18,7 @@ export default {
 
         SOLITARE.init({VARS, TESTING, app, DECK, PIXI})
         SOLITARE.deal();
+
        
     },
     ticker: function(delta) {
