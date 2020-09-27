@@ -1,13 +1,16 @@
-import ROOT from '../solitaire.script';
+import ROOT from '../homecanvas.script';
 import ListenerManager from "./listener-manager";
 import VARS from '../utils/vars.script';
 import TESTING from '../utils/testing.script';
 
 
 export default class {
+   root = undefined;
+    static setRoot (root) {
+        this.root = root;
+    }
     static drawPileClickHandler (e) {
-
-        let top3 = ROOT.drawPile.splice(-3).reverse(), card;
+        let top3 = this.root.drawPile.splice(-3).reverse(), card;
 
         TESTING.printDeck(top3)
 
@@ -15,44 +18,44 @@ export default class {
             card  = top3[i];
             card.reveal(true);
             ListenerManager.removeAllListeners(card)
-            ROOT.container.addChild(card)
+            this.root.gameBoard.addChild(card)
             card.y += VARS.cardHeight + 20;
         }
 
-        ROOT.flipPile = [...ROOT.flipPile, ...top3];
+        this.root.flipPile = [...this.root.flipPile, ...top3];
 
-        ROOT.topFlipPileCard = card;
-        ListenerManager.addDrag(ROOT.topFlipPileCard);
+        this.root.topFlipPileCard = card;
+        ListenerManager.addDrag(this.root.topFlipPileCard);
 
-        if (ROOT.drawPile.length === 0) {
-            ListenerManager.addResetFlip(ROOT.resetDrawPileButton); 
+        if (this.root.drawPile.length === 0) {
+            ListenerManager.addResetFlip(this.root.resetDrawPileButton); 
         } else {
-            let topCard = ROOT.drawPile[ROOT.drawPile.length - 1];
+            let topCard = this.root.drawPile[this.root.drawPile.length - 1];
             ListenerManager.addFlip(topCard);
         }
     
     }
     static resetDrawPileHandler (e) {
 
-        ListenerManager.removeResetFlip(ROOT.resetDrawPileButton);
+        ListenerManager.removeResetFlip(this.root.resetDrawPileButton);
 
-        ROOT.drawPile = [...ROOT.flipPile].reverse();
-        let startY = VARS.cardHeight + (ROOT.buffer * 4);
+        this.root.drawPile = [...this.root.flipPile].reverse();
+        let startY = VARS.cardHeight + (this.root.buffer * 4);
         let c;
        
-        ROOT.drawPile.forEach( card => {
+        this.root.drawPile.forEach( card => {
             card.reveal(false);
             ListenerManager.removeAllListeners(card)
             card.x = 0;
             card.y = startY;
             startY += 1;
-            ROOT.container.addChild(card);
+            this.root.gameBoard.addChild(card);
             c = card;
         })
-        TESTING.printDeck(ROOT.drawPile)
-        ROOT.topDrawPileCard = c;
-        ListenerManager.addFlip(ROOT.topDrawPileCard);
-        ROOT.flipPile = [];
+        TESTING.printDeck(this.root.drawPile)
+        this.root.topDrawPileCard = c;
+        ListenerManager.addFlip(this.root.topDrawPileCard);
+        this.root.flipPile = [];
     }
 
 

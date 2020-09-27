@@ -6,7 +6,10 @@ import MARKER from './marker.script';
 import ListenerManager from './card-movements/listener-manager';
 import VARS from './utils/vars.script';
 import TESTING from './utils/testing.script';
-export default class SOLITAIRE extends PIXI.Container {
+import DrawPileListeners from './card-movements/drawPileListeners.script';
+import PileToSlot from './card-movements/pile-to-slot';
+import PileToPile from './card-movements/pile-to-pile';
+export default class SOLITAIRE {
     buffer = 10;
     buffer_larger = 40;
     slot_spacer = 100;
@@ -19,13 +22,19 @@ export default class SOLITAIRE extends PIXI.Container {
     topDrawPileCard =  undefined;
     flipPile =  [];
     topFlipPileCard =  undefined;
-    constructor (obj) {
-        super();
+    gameBoard = new PIXI.Container();
+    app = undefined;
+    constructor (app) {
         this.deal();
+        this.app = app;
+        DrawPileListeners.setRoot(this);
+        DRAG.setRoot(this);
+        PileToSlot.setRoot(this);
+       // PileToPile.setRoot(this);
     }
     deal() {
 
-        this.removeChildren();
+        this.gameBoard.removeChildren();
         let cardCounter = 0, 
             startX = VARS.cardWidth + this.buffer_larger, 
             startY = VARS.cardHeight + this.buffer_larger, 
@@ -40,7 +49,7 @@ export default class SOLITAIRE extends PIXI.Container {
             marker.index = i;
             marker.x = startX + (VARS.cardWidth + this.buffer) * i;
             marker.y = startY;
-            this.addChild(marker);
+            this.gameBoard.addChild(marker);
             this.piles[i] = [marker]
         }
     
@@ -50,7 +59,7 @@ export default class SOLITAIRE extends PIXI.Container {
                 card = DECK.deck[cardCounter];
                 card.x = startX + (VARS.cardWidth + this.buffer) * j;
                 card.y = startY + (this.buffer * i);
-                this.addChild(card);
+                this.gameBoard.addChild(card);
                 cardCounter ++;
 
                 //index is the key in the object for the piles of cards.  the values will be arrays of the cards in that pile
@@ -81,15 +90,15 @@ export default class SOLITAIRE extends PIXI.Container {
         let slotCont = new PIXI.Container();
 
         for (let i = 0; i < 4; i++) {
-            let slot = SLOT.build(VARS.suits[i]);
+            let slot = new SLOT(VARS.suits[i]);
             slot.x = (VARS.cardWidth + this.slot_spacer) * i;
             DRAG.addSlot(slot);
             slotCont.addChild(slot);
         }
-        slotCont.x = (this.width - slotCont.width) / 2;
-        this.addChild(slotCont)
-        this.x = (VARS.canvasWidth - this.width) / 2;
-        this.y = 20;
+        slotCont.x = (this.gameBoard.width - slotCont.width) / 2;
+        this.gameBoard.addChild(slotCont)
+        this.gameBoard.x = (VARS.canvasWidth - this.gameBoard.width) / 2;
+        this.gameBoard.y = 20;
 
     };
  
@@ -98,7 +107,7 @@ export default class SOLITAIRE extends PIXI.Container {
         this.resetDrawPileButton.x = 0;
         this.resetDrawPileButton.y = startY;
         this.resetDrawPileButton.visible = false;
-        this.addChild(this.resetDrawPileButton);
+        this.gameBoard.addChild(this.resetDrawPileButton);
     };
     createDrawPile(cardCounter, startY) {
         let card;
@@ -106,7 +115,7 @@ export default class SOLITAIRE extends PIXI.Container {
             card = DECK.deck[i];
             card.x = 0;
             card.y = startY;
-            this.addChild(card);
+            this.gameBoard.addChild(card);
             startY += 1;
             card.isDrawPile(true);
             this.drawPile.push(card);

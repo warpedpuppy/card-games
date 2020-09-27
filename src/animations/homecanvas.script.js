@@ -15,8 +15,8 @@ export default {
 
         DECK.init(VARS);  
         DECK.createDeck();
-        let solitaire = new SOLITARE();
-        app.stage.addChild(solitaire);
+        this.solitaire = new SOLITARE(app);
+        app.stage.addChild(this.solitaire.gameBoard);
 
 
        

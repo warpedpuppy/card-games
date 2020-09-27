@@ -1,37 +1,29 @@
-import ROOT from '../solitaire.script';
+// import this.root from '../solitaire.script';
 import * as PIXI from 'pixi.js';
 import VARS from '../utils/vars.script';
 import PileToPile from './pile-to-pile';
 import PileToSlot from './pile-to-slot';
 
-export default  {
-    slots: [],
-    activeCard: undefined,
-    tempGraphics: new PIXI.Graphics(),
-    stage: undefined,
-    parent: undefined,
-    dragCont: new PIXI.Container(),
-    drawPile: undefined,
-    init: function (stage, parent, drawPile) {
-        this.stage = stage;
-        this.parent = parent;
-        this.drawPile = drawPile;
-
-        PileToPile.init(this);
-        PileToSlot.init(this, drawPile)
-
-        this.testCard = new PIXI.Graphics();
-        this.testCard.beginFill(0x996600).drawRect(0,0,100, 150).endFill();
-       // stage.addChild(this.testCard)
-    },
-    addSlot: function (slot) {
+export default class {
+    static slots = [];
+    static activeCard = undefined;
+    tempGraphics =  new PIXI.Graphics();
+    stage = undefined;
+    parent = undefined;
+    static dragCont = new PIXI.Container();
+    drawPile = undefined;
+    root = undefined;
+    static setRoot(root) {
+        this.root = root;
+    }
+    static addSlot(slot) {
         this.slots.push(slot);
-    },
-    onDragStart: function (e) {
+    }
+    static onDragStart (e) {
 
 
         this.activeCard = e.target;
-        let arr = (!this.activeCard.drawPile) ? ROOT.piles[this.activeCard.index] : ROOT.drawPile.flipPile;
+        let arr = (!this.activeCard.drawPile) ? this.root.piles[this.activeCard.index] : this.root.flipPile;
        
 
 
@@ -61,9 +53,9 @@ export default  {
        }
        
 
-       ROOT.app.stage.addChild(this.dragCont)
-    },
-    onDragEnd: function () {
+       this.root.app.stage.addChild(this.dragCont)
+    }
+    static onDragEnd () {
 
         if (!this.activeCard) return;
 
@@ -72,7 +64,7 @@ export default  {
 
          //SLOT CHECK
 
-        let slotHitObject = PileToSlot.slotHitListener(activeCardObj)
+        let slotHitObject = PileToSlot.slotHitListener(activeCardObj, this)
         let pileHitObject = PileToPile.movePileListener(activeCardObj, this.activeCard)
          if (this.dragCont.children.length === 1 && slotHitObject.hit) {
                 let slot = slotHitObject.slot;
@@ -90,17 +82,17 @@ export default  {
         this.dragCont.dragging = false;
         this.dragCont.data = null;
         this.activeCard = undefined;
-        this.stage.removeChild(this.dragCont);
-    },
-    onDragMove: function (e) {
+        this.root.app.stage.removeChild(this.dragCont);
+    }
+    static onDragMove () {
 
         if (this.activeCard && this.dragCont.dragging) {
             const newPosition = this.dragCont.data.getLocalPosition(this.dragCont.parent);
             this.dragCont.x = newPosition.x - this.dragCont.adjustX;
             this.dragCont.y = newPosition.y - this.dragCont.adjustY;
         }
-    },
-    addDrag: function (item) {
+    }
+    static addDrag (item) {
         item.makeInteractive(true)
         item
         .on('pointerdown', this.onDragStart.bind(this))
@@ -109,8 +101,8 @@ export default  {
         .on('pointermove', this.onDragMove.bind(this))
 
         item.hasDrag = true;
-    },
-    removeDrag: function (item) {
+    }
+    static removeDrag (item) {
         item.removeAllListeners();
         item.makeInteractive(false)
         item.hasDrag = false;
