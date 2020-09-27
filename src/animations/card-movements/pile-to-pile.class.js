@@ -1,5 +1,7 @@
 import UTILS from '../utils/utils.class';
 import VARS from '../utils/vars.class';
+import DRAG from './drag.class';
+
 export default class PileToPile{
 
     static root = undefined;
@@ -30,10 +32,10 @@ export default class PileToPile{
        }
        return {hit: false}
    }
-   static movePiles (topCard, key, dragScript) {
+   static movePiles (topCard, key) {
        let storeIndex = this.activeCard.index;
        
-       let temp = [...dragScript.dragCont.children], isDrawPile = false;
+       let temp = [...DRAG.dragCont.children], isDrawPile = false;
        temp.forEach ( (card, i) => {
            card.x = topCard.x;
            let yAdjust = (topCard.marker) ? ((i) * (this.root.buffer * 4)) : ((i + 1) * (this.root.buffer * 4));

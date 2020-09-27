@@ -1,32 +1,34 @@
 import UTILS from '../utils/utils.class';
 import VARS from '../utils/vars.class';
+import DRAG from './drag.class';
+
 export default class PileToSlot {
     static root = undefined;
     static setRoot(root) {
         this.root = root;
     }
-    static slotHitListener (activeCardObj, dragScript) {
+    static slotHitListener (activeCardObj) {
         for (let i = 0; i < 4; i ++) {
     
-            let slotObj = VARS.globalObject(dragScript.slots[i]); 
+            let slotObj = VARS.globalObject(DRAG.slots[i]); 
 
             if ( 
                 UTILS.rectangleRectangleCollisionDetection(slotObj, activeCardObj) &&
-                dragScript.slots[i].rank === dragScript.activeCard.rank &&
-                dragScript.slots[i].suit === dragScript.activeCard.suit
+                DRAG.slots[i].rank === DRAG.activeCard.rank &&
+                DRAG.slots[i].suit === DRAG.activeCard.suit
             ) {
-                return { hit: true, slot: dragScript.slots[i]};
+                return { hit: true, slot: DRAG.slots[i]};
             }
         }
         return {hit: false, slot: undefined};
     }
-    static addCardToSlot (slot, dragScript) {
-        dragScript.removeDrag(dragScript.activeCard);
-        this.root.slotCont.addChild(dragScript.activeCard);
-        dragScript.activeCard.x = slot.x;
-        dragScript.activeCard.y = slot.y;
-        let tempArray = (!dragScript.activeCard.drawPile) ? this.root.piles[dragScript.activeCard.index] : this.root.drawPile.flipPile;
-        tempArray.splice(tempArray.indexOf(dragScript.activeCard), 1)
+    static addCardToSlot (slot) {
+        DRAG.removeDrag(DRAG.activeCard);
+        this.root.slotCont.addChild(DRAG.activeCard);
+        DRAG.activeCard.x = slot.x;
+        DRAG.activeCard.y = slot.y;
+        let tempArray = (!DRAG.activeCard.drawPile) ? this.root.piles[DRAG.activeCard.index] : this.root.drawPile.flipPile;
+        tempArray.splice(tempArray.indexOf(DRAG.activeCard), 1)
         slot.rank ++;
         this.root.revealNextCard(tempArray);
     }
