@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import DECK from './deck.script';
 import VARS from './utils/vars.script';
-import TESTING from './utils/testing';
+import TESTING from './utils/testing.script';
 import SOLITARE from './solitaire.script';
 import CARD from './card.class';
 export default {
@@ -15,9 +15,9 @@ export default {
 
         DECK.init(VARS);  
         DECK.createDeck();
+        let solitaire = new SOLITARE();
+        app.stage.addChild(solitaire);
 
-        SOLITARE.init({VARS, TESTING, app, DECK, PIXI})
-        SOLITARE.deal();
 
        
     },

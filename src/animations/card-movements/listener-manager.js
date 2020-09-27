@@ -1,4 +1,4 @@
-import DRAWPILE from './drawPile.script';
+import DRAWPILELISTENERS from './drawPileListeners.script';
 import DRAG from './drag.script';
 export default class ListenerManager {
 
@@ -20,7 +20,7 @@ export default class ListenerManager {
     }
     static addFlip (card) {
         card.makeInteractive(true)
-        card.on("click", DRAWPILE.drawPileClickHandler.bind(DRAWPILE));
+        card.on("click", DRAWPILELISTENERS.drawPileClickHandler.bind(DRAWPILELISTENERS));
         this.listenerTracker.push(card);
     }
     static removeFlip () {
@@ -29,7 +29,7 @@ export default class ListenerManager {
     static addResetFlip (button) {
         button.visible = true;
         button.interactive = button.buttonMode = true;
-        button.on("click", DRAWPILE.resetDrawPileHandler.bind(DRAWPILE))
+        button.on("click", DRAWPILELISTENERS.resetDrawPileHandler.bind(DRAWPILELISTENERS))
         this.listenerTracker.push(button);
     }
     static removeResetFlip (button) {

@@ -1,35 +1,34 @@
+import * as PIXI from 'pixi.js';
 import SLOT from './slot.script';
+import DECK from './deck.script';
 import DRAG from './card-movements/drag.script';
-import DRAWPILE from './card-movements/drawPile.script';
 import MARKER from './marker.script';
 import ListenerManager from './card-movements/listener-manager';
-export default {
-    buffer: 10,
-    buffer_larger: 40,
-    slot_spacer: 100,
-    deck: [],
-    piles: {},
-    pileMarkers: [],
-    obj: undefined,
-    container: undefined,
-    init: function (obj) {
-        
-        this.obj = obj;
+import VARS from './utils/vars.script';
+import TESTING from './utils/testing.script';
+export default class SOLITAIRE extends PIXI.Container {
+    buffer = 10;
+    buffer_larger = 40;
+    slot_spacer = 100;
+    deck = [];
+    piles = {};
+    pileMarkers = [];
+    obj =  undefined;
+    resetDrawPileButton =  undefined;
+    drawPile =  [];
+    topDrawPileCard =  undefined;
+    flipPile =  [];
+    topFlipPileCard =  undefined;
+    constructor (obj) {
+        super();
+        this.deal();
+    }
+    deal() {
 
-        DRAG.init(obj.app.stage, this, DRAWPILE);
-        DRAWPILE.init(this, DRAG, obj, ListenerManager);
-        SLOT.init(obj.VARS);
-        MARKER.init(obj.VARS);
-
-        this.container = new obj.PIXI.Container();
-        obj.app.stage.addChild(this.container);
-    },
-    deal: function () {
-
-        this.container.removeChildren();
+        this.removeChildren();
         let cardCounter = 0, 
-            startX = this.obj.VARS.cardWidth + this.buffer_larger, 
-            startY = this.obj.VARS.cardHeight + this.buffer_larger, 
+            startX = VARS.cardWidth + this.buffer_larger, 
+            startY = VARS.cardHeight + this.buffer_larger, 
             card, 
             loopingQ = 7,
             rows = loopingQ,
@@ -39,19 +38,19 @@ export default {
        for (let i = 0; i < 7; i++) {
             let marker = MARKER.build();
             marker.index = i;
-            marker.x = startX + (this.obj.VARS.cardWidth + this.buffer) * i;
+            marker.x = startX + (VARS.cardWidth + this.buffer) * i;
             marker.y = startY;
-            this.container.addChild(marker);
+            this.addChild(marker);
             this.piles[i] = [marker]
         }
     
         for (let i = 0; i < rows; i ++) {
             for (let j = 0; j < loopingQ; j ++) {
             
-                card = this.obj.DECK.deck[cardCounter];
-                card.x = startX + (this.obj.VARS.cardWidth + this.buffer) * j;
+                card = DECK.deck[cardCounter];
+                card.x = startX + (VARS.cardWidth + this.buffer) * j;
                 card.y = startY + (this.buffer * i);
-                this.container.addChild(card);
+                this.addChild(card);
                 cardCounter ++;
 
                 //index is the key in the object for the piles of cards.  the values will be arrays of the cards in that pile
@@ -71,7 +70,7 @@ export default {
             
             loopingQ --;
 
-            startX += this.obj.VARS.cardWidth + this.buffer;
+            startX += VARS.cardWidth + this.buffer;
         }
 
         // DRAW PILE
@@ -79,46 +78,46 @@ export default {
         this.createDrawPile(cardCounter, startY);
       
 
-        let slotCont = new this.obj.PIXI.Container();
+        let slotCont = new PIXI.Container();
 
         for (let i = 0; i < 4; i++) {
-            let slot = SLOT.build(this.obj.VARS.suits[i]);
-            slot.x = (this.obj.VARS.cardWidth + this.slot_spacer) * i;
+            let slot = SLOT.build(VARS.suits[i]);
+            slot.x = (VARS.cardWidth + this.slot_spacer) * i;
             DRAG.addSlot(slot);
             slotCont.addChild(slot);
         }
-        slotCont.x = (this.container.width - slotCont.width) / 2;
-        this.container.addChild(slotCont)
-        this.container.x = (this.obj.VARS.canvasWidth - this.container.width) / 2;
-        this.container.y = 20;
+        slotCont.x = (this.width - slotCont.width) / 2;
+        this.addChild(slotCont)
+        this.x = (VARS.canvasWidth - this.width) / 2;
+        this.y = 20;
 
-    },
+    };
  
-    createDrawPileResetButton: function (startY) {
-        DRAWPILE.resetDrawPileButton = MARKER.build();
-        DRAWPILE.resetDrawPileButton.x = 0;
-        DRAWPILE.resetDrawPileButton.y = startY;
-        DRAWPILE.resetDrawPileButton.visible = false;
-        this.container.addChild(DRAWPILE.resetDrawPileButton);
-    },
-    createDrawPile: function (cardCounter, startY) {
+    createDrawPileResetButton(startY) {
+        this.resetDrawPileButton = MARKER.build();
+        this.resetDrawPileButton.x = 0;
+        this.resetDrawPileButton.y = startY;
+        this.resetDrawPileButton.visible = false;
+        this.addChild(this.resetDrawPileButton);
+    };
+    createDrawPile(cardCounter, startY) {
         let card;
         for (let i = cardCounter; i < 52; i ++) {
-            card = this.obj.DECK.deck[i];
+            card = DECK.deck[i];
             card.x = 0;
             card.y = startY;
-            this.container.addChild(card);
+            this.addChild(card);
             startY += 1;
             card.isDrawPile(true);
-            DRAWPILE.drawPile.push(card);
+            this.drawPile.push(card);
         }
-       this.obj.TESTING.printDeck(DRAWPILE.drawPile)
+       TESTING.printDeck(this.drawPile)
        this.topDrawPileCard = card;
 
        ListenerManager.addFlip(this.topDrawPileCard);
      
-    },
-    revealNextCard: function (arr) {
+    }
+    revealNextCard(arr) {
         //FLIP TOP OF PILE
 
         if (arr.length) {
@@ -132,5 +131,5 @@ export default {
         }
         
 
-    },
+    };
 }

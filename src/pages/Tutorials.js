@@ -9,6 +9,7 @@ export default function Tutorials() {
                 <li>difference between "isNaN" and "Number.isNaN"</li>
                 <li>stop propagation</li>
                 <li> css grid and flex float</li>
+                <li>including classes across multiple other classes but making sure you're not instantiating new ones</li>
             </ul>
         </div>
     )

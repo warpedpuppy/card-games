@@ -1,9 +1,10 @@
+import ROOT from '../solitaire.script';
 import * as PIXI from 'pixi.js';
 import VARS from '../utils/vars.script';
 import PileToPile from './pile-to-pile';
 import PileToSlot from './pile-to-slot';
 
-export default {
+export default  {
     slots: [],
     activeCard: undefined,
     tempGraphics: new PIXI.Graphics(),
@@ -30,7 +31,7 @@ export default {
 
 
         this.activeCard = e.target;
-        let arr = (!this.activeCard.drawPile) ? this.parent.piles[this.activeCard.index] : this.drawPile.flipPile;
+        let arr = (!this.activeCard.drawPile) ? ROOT.piles[this.activeCard.index] : ROOT.drawPile.flipPile;
        
 
 
@@ -60,7 +61,7 @@ export default {
        }
        
 
-        this.stage.addChild(this.dragCont)
+       ROOT.app.stage.addChild(this.dragCont)
     },
     onDragEnd: function () {
 
