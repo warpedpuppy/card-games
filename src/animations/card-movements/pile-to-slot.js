@@ -22,15 +22,11 @@ export default class {
     }
     static addCardToSlot (slot, dragScript) {
         dragScript.removeDrag(dragScript.activeCard);
-      //  let destinationParent = slot.parent;
-        this.root.gameBoard.addChild(dragScript.activeCard);
+        this.root.slotCont.addChild(dragScript.activeCard);
         dragScript.activeCard.x = slot.x;
         dragScript.activeCard.y = slot.y;
-        // console.log(this.root, this.root.piles, dragScript.activeCard.drawPile)
         let tempArray = (!dragScript.activeCard.drawPile) ? this.root.piles[dragScript.activeCard.index] : this.root.drawPile.flipPile;
-        //REMOVE FROM PILE
         tempArray.splice(tempArray.indexOf(dragScript.activeCard), 1)
-        //this.cardPlacedOnSlot(this.parent.activeCard);
         slot.rank ++;
         this.root.revealNextCard(tempArray);
     }

@@ -20,6 +20,7 @@ export default class SOLITAIRE {
     resetDrawPileButton =  undefined;
     drawPile =  [];
     topDrawPileCard =  undefined;
+    slotCont = new PIXI.Container();
     flipPile =  [];
     topFlipPileCard =  undefined;
     gameBoard = new PIXI.Container();
@@ -87,16 +88,15 @@ export default class SOLITAIRE {
         this.createDrawPile(cardCounter, startY);
       
 
-        let slotCont = new PIXI.Container();
 
         for (let i = 0; i < 4; i++) {
             let slot = new SLOT(VARS.suits[i]);
             slot.x = (VARS.cardWidth + this.slot_spacer) * i;
             DRAG.addSlot(slot);
-            slotCont.addChild(slot);
+            this.slotCont.addChild(slot);
         }
-        slotCont.x = (this.gameBoard.width - slotCont.width) / 2;
-        this.gameBoard.addChild(slotCont)
+        this.slotCont.x = (this.gameBoard.width - this.slotCont.width) / 2;
+        this.gameBoard.addChild(this.slotCont)
         this.gameBoard.x = (VARS.canvasWidth - this.gameBoard.width) / 2;
         this.gameBoard.y = 20;
 

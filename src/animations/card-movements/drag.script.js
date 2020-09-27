@@ -68,7 +68,7 @@ export default class {
         let pileHitObject = PileToPile.movePileListener(activeCardObj, this.activeCard)
          if (this.dragCont.children.length === 1 && slotHitObject.hit) {
                 let slot = slotHitObject.slot;
-                PileToSlot.addCardToSlot(slot);
+                PileToSlot.addCardToSlot(slot, this);
          } else if (pileHitObject.hit) {
             PileToPile.movePiles(pileHitObject.topCard, pileHitObject.key);
          } else {
