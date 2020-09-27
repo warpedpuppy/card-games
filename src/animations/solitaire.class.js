@@ -1,15 +1,15 @@
 import * as PIXI from 'pixi.js';
-import SLOT from './slot.script';
-import DECK from './deck.script';
-import DRAG from './card-movements/drag.script';
-import MARKER from './marker.script';
-import ListenerManager from './card-movements/listener-manager';
+import SLOT from './slot.class';
+import DECK from './deck.class';
+import DRAG from './card-movements/drag.class';
+import MARKER from './marker.class';
+import ListenerManager from './card-movements/listener-manager.class';
 import VARS from './utils/vars.script';
 import TESTING from './utils/testing.script';
-import DrawPileListeners from './card-movements/drawPileListeners.script';
-import PileToSlot from './card-movements/pile-to-slot';
-import PileToPile from './card-movements/pile-to-pile';
-export default class SOLITAIRE {
+import DrawPileListeners from './card-movements/drawPileListeners.class';
+import PileToSlot from './card-movements/pile-to-slot.class';
+import PileToPile from './card-movements/pile-to-pile.class';
+export default class Solitare {
     buffer = 10;
     buffer_larger = 40;
     slot_spacer = 100;
@@ -26,12 +26,13 @@ export default class SOLITAIRE {
     gameBoard = new PIXI.Container();
     app = undefined;
     constructor (app) {
+        this.deck = new DECK();
         this.deal();
         this.app = app;
         DrawPileListeners.setRoot(this);
         DRAG.setRoot(this);
         PileToSlot.setRoot(this);
-       // PileToPile.setRoot(this);
+       PileToPile.setRoot(this);
     }
     deal() {
 
@@ -46,7 +47,7 @@ export default class SOLITAIRE {
         
        // CREATE CARD PILES
        for (let i = 0; i < 7; i++) {
-            let marker = MARKER.build();
+            let marker = new MARKER();
             marker.index = i;
             marker.x = startX + (VARS.cardWidth + this.buffer) * i;
             marker.y = startY;
@@ -57,7 +58,7 @@ export default class SOLITAIRE {
         for (let i = 0; i < rows; i ++) {
             for (let j = 0; j < loopingQ; j ++) {
             
-                card = DECK.deck[cardCounter];
+                card = this.deck[cardCounter];
                 card.x = startX + (VARS.cardWidth + this.buffer) * j;
                 card.y = startY + (this.buffer * i);
                 this.gameBoard.addChild(card);
@@ -103,7 +104,7 @@ export default class SOLITAIRE {
     };
  
     createDrawPileResetButton(startY) {
-        this.resetDrawPileButton = MARKER.build();
+        this.resetDrawPileButton = new MARKER();
         this.resetDrawPileButton.x = 0;
         this.resetDrawPileButton.y = startY;
         this.resetDrawPileButton.visible = false;
@@ -112,7 +113,7 @@ export default class SOLITAIRE {
     createDrawPile(cardCounter, startY) {
         let card;
         for (let i = cardCounter; i < 52; i ++) {
-            card = DECK.deck[i];
+            card = this.deck[i];
             card.x = 0;
             card.y = startY;
             this.gameBoard.addChild(card);

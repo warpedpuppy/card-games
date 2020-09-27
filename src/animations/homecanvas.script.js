@@ -1,8 +1,7 @@
 import * as PIXI from 'pixi.js';
-import DECK from './deck.script';
 import VARS from './utils/vars.script';
 import TESTING from './utils/testing.script';
-import SOLITARE from './solitaire.script';
+import SOLITARE from './solitaire.class';
 import CARD from './card.class';
 export default {
     init: function () {
@@ -13,8 +12,6 @@ export default {
         document.getElementById("home-canvas").appendChild(app.view);
         app.ticker.add(this.ticker);
 
-        DECK.init(VARS);  
-        DECK.createDeck();
         this.solitaire = new SOLITARE(app);
         app.stage.addChild(this.solitaire.gameBoard);
 

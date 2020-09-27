@@ -1,5 +1,4 @@
-import ROOT from '../homecanvas.script';
-import ListenerManager from "./listener-manager";
+import ListenerManager from "./listener-manager.class";
 import VARS from '../utils/vars.script';
 import TESTING from '../utils/testing.script';
 

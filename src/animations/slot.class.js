@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import VARS from './utils/vars.script';
-export default class SLOT extends PIXI.Container {
+export default class Slot extends PIXI.Container {
     constructor (suit) {
         super();
         const graphics = new PIXI.Graphics();

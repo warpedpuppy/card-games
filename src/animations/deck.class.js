@@ -2,26 +2,23 @@
 import CARD from './card.class';
 import _ from 'lodash';
 import VARS from './utils/vars.script';
-export default {
-    deck: [],
-    init: function (vars) {
-        //CARD.init(vars)
-    },
-    createDeck: function () {
-        
+export default class Deck extends Array {
+    
+    constructor() {
+        super();
         for (let i = 0; i < 4; i ++) {
             for (let j = 0; j < 13; j++) {
-                let card = new CARD(j, i, VARS);
+                let card = new CARD(j, i);
                 card.this = this;
-                this.deck.push(card);
+                this.push(card);
             }
         }
         this.shuffle();
-    },
-    shuffle: function () {
+    }
+    shuffle () {
         this.deck = _.shuffle(this.deck);
-    },
-    layout: function () {
+    }
+    layout() {
         let counter = 0;
         for (let i = 0; i < 4; i ++) {
             for (let j = 0; j < 13; j++) {
@@ -33,5 +30,5 @@ export default {
                 counter ++;
             }
         }
-    },
+    }
 }

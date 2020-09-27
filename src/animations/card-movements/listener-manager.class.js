@@ -1,5 +1,5 @@
-import DRAWPILELISTENERS from './drawPileListeners.script';
-import DRAG from './drag.script';
+import DRAWPILELISTENERS from './drawPileListeners.class';
+import DRAG from './drag.class';
 export default class ListenerManager {
 
     static listenerTracker = [];

@@ -1,16 +1,17 @@
 // import this.root from '../solitaire.script';
 import * as PIXI from 'pixi.js';
 import VARS from '../utils/vars.script';
-import PileToPile from './pile-to-pile';
-import PileToSlot from './pile-to-slot';
+import PileToPile from './pile-to-pile.class';
+import PileToSlot from './pile-to-slot.class';
 
-export default class {
+export default class Drag {
     static slots = [];
     static activeCard = undefined;
+    static dragCont = new PIXI.Container();
     tempGraphics =  new PIXI.Graphics();
     stage = undefined;
     parent = undefined;
-    static dragCont = new PIXI.Container();
+    
     drawPile = undefined;
     root = undefined;
     static setRoot(root) {
@@ -70,7 +71,7 @@ export default class {
                 let slot = slotHitObject.slot;
                 PileToSlot.addCardToSlot(slot, this);
          } else if (pileHitObject.hit) {
-            PileToPile.movePiles(pileHitObject.topCard, pileHitObject.key);
+            PileToPile.movePiles(pileHitObject.topCard, pileHitObject.key, this);
          } else {
                 let tempArray = [...this.dragCont.children];
                 tempArray.forEach( card => {
