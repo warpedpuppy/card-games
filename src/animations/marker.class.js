@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import VARS from './utils/vars.script';
+import VARS from './utils/vars.class';
 export default class Marker extends PIXI.Container {
     constructor () {
         super();

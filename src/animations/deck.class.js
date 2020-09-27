@@ -1,7 +1,7 @@
 // import CARD from './card.script';
 import CARD from './card.class';
 import _ from 'lodash';
-import VARS from './utils/vars.script';
+import VARS from './utils/vars.class';
 export default class Deck extends Array {
     
     constructor() {

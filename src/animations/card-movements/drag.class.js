@@ -1,6 +1,6 @@
 // import this.root from '../solitaire.script';
 import * as PIXI from 'pixi.js';
-import VARS from '../utils/vars.script';
+import VARS from '../utils/vars.class';
 import PileToPile from './pile-to-pile.class';
 import PileToSlot from './pile-to-slot.class';
 

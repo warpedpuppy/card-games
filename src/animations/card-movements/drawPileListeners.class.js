@@ -1,6 +1,6 @@
 import ListenerManager from "./listener-manager.class";
-import VARS from '../utils/vars.script';
-import TESTING from '../utils/testing.script';
+import VARS from '../utils/vars.class';
+import TESTING from '../utils/testing.class';
 
 
 export default class {

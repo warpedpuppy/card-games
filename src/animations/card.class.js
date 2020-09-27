@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import VARS from './utils/vars.script';
+import Vars from './utils/vars.class';
 export default class Card extends PIXI.Container {
     cover = new PIXI.Graphics();
     rank = undefined;
@@ -9,7 +9,7 @@ export default class Card extends PIXI.Container {
     constructor(rank, suitIndex) {
         super();
         this.rank = rank + 1;
-        this.suit = VARS.suits[suitIndex];
+        this.suit = Vars.suits[suitIndex];
         this.color = (this.suit === 'hearts' || this.suit === 'diamonds') ? "red" : "black" ;
         this.buildCard(rank, suitIndex);
         this.reveal(false);
@@ -27,18 +27,18 @@ export default class Card extends PIXI.Container {
     buildCard (rankProp, suitIndexProp) {
         const cardBack = new PIXI.Graphics();
         cardBack.beginFill(0x000000);
-        cardBack.drawRoundedRect(0, 0, VARS.cardWidth, VARS.cardHeight, 10);
+        cardBack.drawRoundedRect(0, 0, Vars.cardWidth, Vars.cardHeight, 10);
         cardBack.endFill();
         this.addChild(cardBack)
 
 
         const graphics = new PIXI.Graphics();
         graphics.beginFill(0xCCCCCC);
-        graphics.drawRoundedRect(5, 5, VARS.cardWidth - 10, VARS.cardHeight - 10, 10);
+        graphics.drawRoundedRect(5, 5, Vars.cardWidth - 10, Vars.cardHeight - 10, 10);
         graphics.endFill();
         this.addChild(graphics)
 
-        let rank = new PIXI.Text(VARS.rank[rankProp], {
+        let rank = new PIXI.Text(Vars.rank[rankProp], {
             fontFamily : 'Arial', 
             fontSize: 10, 
             fill : 0xff1010,
@@ -47,7 +47,7 @@ export default class Card extends PIXI.Container {
         rank.x = 15;
         this.addChild(rank);
 
-        let suit = new PIXI.Text(VARS.suits[suitIndexProp], {
+        let suit = new PIXI.Text(Vars.suits[suitIndexProp], {
             fontFamily : 'Arial', 
             fontSize: 10, 
             fill : 0xff1010,
@@ -57,7 +57,7 @@ export default class Card extends PIXI.Container {
         this.addChild(suit)
 
         this.cover.beginFill(0x669900);
-        this.cover.drawRoundedRect(2, 2, VARS.cardWidth - 4, VARS.cardHeight - 4, 10);
+        this.cover.drawRoundedRect(2, 2, Vars.cardWidth - 4, Vars.cardHeight - 4, 10);
         this.cover.endFill();
 
         this.addChild(this.cover);

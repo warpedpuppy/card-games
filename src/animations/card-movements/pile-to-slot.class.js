@@ -1,5 +1,5 @@
-import UTILS from '../utils/utils';
-import VARS from '../utils/vars.script';
+import UTILS from '../utils/utils.class';
+import VARS from '../utils/vars.class';
 export default class PileToSlot {
     static root = undefined;
     static setRoot(root) {
