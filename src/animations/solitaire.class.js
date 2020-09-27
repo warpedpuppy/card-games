@@ -129,12 +129,11 @@ export default class Solitare {
     }
     revealNextCard(arr) {
         //FLIP TOP OF PILE
-
         if (arr.length) {
             let finalIndex = arr.length - 1;
             let newTopCard = arr[finalIndex];
             if (!newTopCard.marker) {
-                newTopCard.reveal();
+                newTopCard.reveal(true);
                 ListenerManager.addDrag(newTopCard);
             }
           

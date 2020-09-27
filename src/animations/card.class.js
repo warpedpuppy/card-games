@@ -15,6 +15,7 @@ export default class Card extends PIXI.Container {
         this.reveal(false);
     }
     reveal (boolean) {
+        console.log("boom", boolean)
         this.cover.visible = !boolean;
     }
     makeInteractive (boolean) {
