@@ -1,8 +1,6 @@
 import * as PIXI from 'pixi.js';
 import VARS from './utils/vars.class';
-import TESTING from './utils/testing.class';
 import SOLITARE from './solitaire.class';
-import CARD from './card.class';
 export default {
     init: function () {
 
@@ -15,8 +13,6 @@ export default {
         this.solitaire = new SOLITARE(app);
         app.stage.addChild(this.solitaire.gameBoard);
 
-
-       
     },
     ticker: function(delta) {
 

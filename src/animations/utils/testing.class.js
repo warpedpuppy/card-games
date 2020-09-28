@@ -8,11 +8,9 @@ export default {
     },
     howManyListeners: function (arr) {
         arr.forEach( card => {
-            if (!card.interactive) {
-                console.log('no listener')
-            } else {
-                console.log('listener')
-            }
+            if (card._eventsCount) {
+                console.log('card', card.suit, card.rank, card._eventsCount, card)
+            } 
         })
     }
 }

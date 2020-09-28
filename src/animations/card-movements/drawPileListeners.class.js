@@ -9,6 +9,9 @@ export default class {
         this.root = root;
     }
     static drawPileClickHandler (e) {
+
+        if (this.root.topFlipPileCard) ListenerManager.removeAllListeners(this.root.topFlipPileCard);
+        
         let top3 = this.root.drawPile.splice(-3).reverse(), card;
 
         TESTING.printDeck(top3)
@@ -32,6 +35,7 @@ export default class {
             let topCard = this.root.drawPile[this.root.drawPile.length - 1];
             ListenerManager.addFlip(topCard);
         }
+        TESTING.howManyListeners(this.root.flipPile);
     
     }
     static resetDrawPileHandler (e) {

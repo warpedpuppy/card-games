@@ -5,20 +5,17 @@ import PileToPile from './pile-to-pile.class';
 import PileToSlot from './pile-to-slot.class';
 
 export default class Drag {
-    static slots = [];
     static activeCard = undefined;
     static dragCont = new PIXI.Container();
     tempGraphics =  new PIXI.Graphics();
     stage = undefined;
     parent = undefined;
-    
     drawPile = undefined;
     root = undefined;
     static setRoot(root) {
         this.root = root;
-    }
-    static addSlot(slot) {
-        this.slots.push(slot);
+        PileToSlot.setRoot(root);
+        PileToPile.setRoot(root);
     }
     static onDragStart (e) {
 
@@ -44,14 +41,24 @@ export default class Drag {
         
   
        let activeCardIndex = arr.indexOf(this.activeCard), yOffset = 0;
-       for (let i = activeCardIndex; i < arr.length; i++) {
-            arr[i].storeParent = arr[i].parent;
-            arr[i].storePos = {x: arr[i].x, y: arr[i].y};
-            arr[i].x = 0;
-            arr[i].y = yOffset * 40;
-            this.dragCont.addChild(arr[i]);
-            yOffset++;
-       }
+
+       //I THINK ALL OF THIS CAN BE SIMPLIFIED/UNIFIED
+       if (!this.activeCard.drawPile ) {
+            for (let i = activeCardIndex; i < arr.length; i++) {
+                    arr[i].storeParent = arr[i].parent;
+                    arr[i].storePos = {x: arr[i].x, y: arr[i].y};
+                    arr[i].x = 0;
+                    arr[i].y = yOffset * 40;
+                    this.dragCont.addChild(arr[i]);
+                    yOffset++;
+            }
+        } else {
+            this.activeCard.storeParent = this.activeCard.parent;
+            this.activeCard.storePos = {x: this.activeCard.x, y: this.activeCard.y};
+            this.activeCard.x = 0;
+            this.activeCard.y = 0;
+            this.dragCont.addChild(this.activeCard);
+        }
        
 
        this.root.app.stage.addChild(this.dragCont)
@@ -62,8 +69,6 @@ export default class Drag {
 
         let activeCardObj = VARS.globalObject(this.activeCard);
 
-
-         //SLOT CHECK
 
         let slotHitObject = PileToSlot.slotHitListener(activeCardObj, this)
         let pileHitObject = PileToPile.movePileListener(activeCardObj, this.activeCard)
@@ -82,6 +87,7 @@ export default class Drag {
          }
         this.dragCont.dragging = false;
         this.dragCont.data = null;
+        this.dragCont.removeChildren();
         this.activeCard = undefined;
         this.root.app.stage.removeChild(this.dragCont);
     }
@@ -94,6 +100,8 @@ export default class Drag {
         }
     }
     static addDrag (item) {
+
+        if (item._eventsCount > 1) return;
         item.makeInteractive(true)
         item
         .on('pointerdown', this.onDragStart.bind(this))

@@ -1,8 +1,9 @@
+import Drag from './drag.class';
 import UTILS from '../utils/utils.class';
 import VARS from '../utils/vars.class';
-import DRAG from './drag.class';
 
-export default class PileToPile{
+
+export default class PileToPile {
 
     static root = undefined;
     static setRoot (root) {
@@ -12,9 +13,9 @@ export default class PileToPile{
         this.activeCard = activeCard;
         //PILE TO PILE CHECK
         for (let key in this.root.piles) {
-           
-           //test for piles with cards
-          let topCard = this.root.piles[key][this.root.piles[key].length - 1];
+            
+          let arr = this.root.piles[key],
+              topCard = arr[arr.length - 1];
           
           if (!this.activeCard || !topCard || activeCard.index === key) continue;
 
@@ -35,17 +36,19 @@ export default class PileToPile{
    static movePiles (topCard, key) {
        let storeIndex = this.activeCard.index;
        
-       let temp = [...DRAG.dragCont.children], isDrawPile = false;
+       let temp = [...Drag.dragCont.children], isDrawPile = false, arr;
        temp.forEach ( (card, i) => {
            card.x = topCard.x;
            let yAdjust = (topCard.marker) ? ((i) * (this.root.buffer * 4)) : ((i + 1) * (this.root.buffer * 4));
            card.y = topCard.y + yAdjust;
            if (!card.drawPile) {
              this.root.piles[card.index].splice(this.root.piles[card.index].indexOf(card), 1)
+             arr = this.root.piles[card.index];
            } else {
                isDrawPile = true;
                card.drawPile = false;
-               this.root.flipPile.splice(this.root.flipPile.indexOf(card), 1)
+               this.root.flipPile.splice(this.root.flipPile.indexOf(card), 1);
+               arr = this.root.flipPile;
            }
            
            this.root.piles[key].push(card);
@@ -54,6 +57,6 @@ export default class PileToPile{
        })
 
       
-       if (!isDrawPile) this.root.revealNextCard(this.root.piles[storeIndex])
+       this.root.revealNextCard(arr)
    }
 }

@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
-import Vars from './utils/vars.class';
+import Vars from '../utils/vars.class';
+
 export default class Card extends PIXI.Container {
     cover = new PIXI.Graphics();
     rank = undefined;
@@ -15,7 +16,6 @@ export default class Card extends PIXI.Container {
         this.reveal(false);
     }
     reveal (boolean) {
-        console.log("boom", boolean)
         this.cover.visible = !boolean;
     }
     makeInteractive (boolean) {
@@ -30,7 +30,6 @@ export default class Card extends PIXI.Container {
         cardBack.drawRoundedRect(0, 0, Vars.cardWidth, Vars.cardHeight, 10);
         cardBack.endFill();
         this.addChild(cardBack)
-
 
         const graphics = new PIXI.Graphics();
         graphics.beginFill(0xCCCCCC);

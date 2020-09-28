@@ -1,14 +1,12 @@
 import * as PIXI from 'pixi.js';
-import SLOT from './slot.class';
-import DECK from './deck.class';
-import DRAG from './card-movements/drag.class';
-import MARKER from './marker.class';
+import Slot from './visual-assets/slot.class';
+import Deck from './visual-assets/deck.class';
+import Marker from './visual-assets/marker.class';
 import ListenerManager from './card-movements/listener-manager.class';
 import VARS from './utils/vars.class';
 import TESTING from './utils/testing.class';
-import DrawPileListeners from './card-movements/drawPileListeners.class';
-import PileToSlot from './card-movements/pile-to-slot.class';
-import PileToPile from './card-movements/pile-to-pile.class';
+import _ from 'lodash';
+
 export default class Solitare {
     buffer = 10;
     buffer_larger = 40;
@@ -25,36 +23,70 @@ export default class Solitare {
     topFlipPileCard =  undefined;
     gameBoard = new PIXI.Container();
     app = undefined;
+    slots = [];
     constructor (app) {
-        this.deck = new DECK();
+        this.deck = new Deck();
         this.deal();
         this.app = app;
-        DrawPileListeners.setRoot(this);
-        DRAG.setRoot(this);
-        PileToSlot.setRoot(this);
-       PileToPile.setRoot(this);
+        ListenerManager.setRoot(this);
     }
     deal() {
 
         this.gameBoard.removeChildren();
-        let cardCounter = 0, 
-            startX = VARS.cardWidth + this.buffer_larger, 
-            startY = VARS.cardHeight + this.buffer_larger, 
-            card, 
-            loopingQ = 7,
-            rows = loopingQ,
-            totalColumns = loopingQ;
         
-       // CREATE CARD PILES
-       for (let i = 0; i < 7; i++) {
-            let marker = new MARKER();
+        let obj = {
+            cardCounter: 0, 
+            startX: VARS.cardWidth + this.buffer_larger, 
+            startY: VARS.cardHeight + this.buffer_larger, 
+            loopingQ:  7,
+            rows:  7,
+            totalColumns:  7
+        }
+
+        this.shuffle();
+        
+       // CARD PILES
+        let { adjustedStartY, adjustedCardCounter } = this.createCardPiles(obj);
+
+        // DRAW PILE
+        this.createDrawPile(adjustedCardCounter, adjustedStartY);
+
+        // SLOTS 
+        this.createSlots();
+
+        // PLACEMENT
+        this.gameBoard.x = (VARS.canvasWidth - this.gameBoard.width) / 2;
+        this.gameBoard.y = 20;
+
+    }
+
+    shuffle () {
+        this.deck = _.shuffle(this.deck);
+    }
+
+    createSlots () {
+        for (let i = 0; i < 4; i++) {
+            let slot = new Slot(VARS.suits[i]);
+            slot.x = (VARS.cardWidth + this.slot_spacer) * i;
+            this.slots.push(slot)
+            this.slotCont.addChild(slot);
+        }
+        this.slotCont.x = (this.gameBoard.width - this.slotCont.width) / 2;
+        this.gameBoard.addChild(this.slotCont)
+    }
+
+    createCardPiles (obj) {
+        let { rows, loopingQ, cardCounter, startX, startY, totalColumns } = obj;
+
+        for (let i = 0; i < loopingQ; i++) {
+            let marker = new Marker();
             marker.index = i;
             marker.x = startX + (VARS.cardWidth + this.buffer) * i;
             marker.y = startY;
             this.gameBoard.addChild(marker);
             this.piles[i] = [marker]
         }
-    
+        let card;
         for (let i = 0; i < rows; i ++) {
             for (let j = 0; j < loopingQ; j ++) {
             
@@ -84,33 +116,20 @@ export default class Solitare {
             startX += VARS.cardWidth + this.buffer;
         }
 
-        // DRAW PILE
-        this.createDrawPileResetButton(startY);
-        this.createDrawPile(cardCounter, startY);
-      
-
-
-        for (let i = 0; i < 4; i++) {
-            let slot = new SLOT(VARS.suits[i]);
-            slot.x = (VARS.cardWidth + this.slot_spacer) * i;
-            DRAG.addSlot(slot);
-            this.slotCont.addChild(slot);
-        }
-        this.slotCont.x = (this.gameBoard.width - this.slotCont.width) / 2;
-        this.gameBoard.addChild(this.slotCont)
-        this.gameBoard.x = (VARS.canvasWidth - this.gameBoard.width) / 2;
-        this.gameBoard.y = 20;
-
-    };
- 
+        return { adjustedCardCounter: cardCounter, adjustedStartY: startY }
+    }
+    
     createDrawPileResetButton(startY) {
-        this.resetDrawPileButton = new MARKER();
+        this.resetDrawPileButton = new Marker();
         this.resetDrawPileButton.x = 0;
         this.resetDrawPileButton.y = startY;
         this.resetDrawPileButton.visible = false;
         this.gameBoard.addChild(this.resetDrawPileButton);
     };
     createDrawPile(cardCounter, startY) {
+
+        this.createDrawPileResetButton(startY);
+
         let card;
         for (let i = cardCounter; i < 52; i ++) {
             card = this.deck[i];
@@ -128,17 +147,15 @@ export default class Solitare {
      
     }
     revealNextCard(arr) {
-        //FLIP TOP OF PILE
         if (arr.length) {
             let finalIndex = arr.length - 1;
             let newTopCard = arr[finalIndex];
+            console.log("add listener to ", newTopCard.suit, newTopCard.rank)
             if (!newTopCard.marker) {
                 newTopCard.reveal(true);
+
                 ListenerManager.addDrag(newTopCard);
             }
-          
         }
-        
-
     };
 }
