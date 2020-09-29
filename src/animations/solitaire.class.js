@@ -150,7 +150,7 @@ export default class Solitare {
         if (arr.length) {
             let finalIndex = arr.length - 1;
             let newTopCard = arr[finalIndex];
-            console.log("add listener to ", newTopCard.suit, newTopCard.rank)
+            //console.log("add listener to ", newTopCard.suit, newTopCard.rank)
             if (!newTopCard.marker) {
                 newTopCard.reveal(true);
 

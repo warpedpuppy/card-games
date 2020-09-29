@@ -1,27 +1,27 @@
 import ListenerManager from "./listener-manager.class";
-import VARS from '../utils/vars.class';
-import TESTING from '../utils/testing.class';
+import Vars from '../utils/vars.class';
+import Testing from '../utils/testing.class';
 
 
 export default class {
-   root = undefined;
+    root = undefined;
     static setRoot (root) {
         this.root = root;
     }
     static drawPileClickHandler (e) {
 
-        if (this.root.topFlipPileCard) ListenerManager.removeAllListeners(this.root.topFlipPileCard);
-        
-        let top3 = this.root.drawPile.splice(-3).reverse(), card;
 
-        TESTING.printDeck(top3)
+        let top3 = this.root.drawPile.splice(-3).reverse(), 
+            card;
+
+        Testing.printDeck(top3)
 
         for (let i = 0; i < top3.length; i ++) {
-            card  = top3[i];
+            card = top3[i];
             card.reveal(true);
             ListenerManager.removeAllListeners(card)
             this.root.gameBoard.addChild(card)
-            card.y += VARS.cardHeight + 20;
+            card.y += Vars.cardHeight + 20;
         }
 
         this.root.flipPile = [...this.root.flipPile, ...top3];
@@ -35,7 +35,8 @@ export default class {
             let topCard = this.root.drawPile[this.root.drawPile.length - 1];
             ListenerManager.addFlip(topCard);
         }
-        TESTING.howManyListeners(this.root.flipPile);
+
+       Testing.howManyListeners(this.root.flipPile);
     
     }
     static resetDrawPileHandler (e) {
@@ -43,7 +44,7 @@ export default class {
         ListenerManager.removeResetFlip(this.root.resetDrawPileButton);
 
         this.root.drawPile = [...this.root.flipPile].reverse();
-        let startY = VARS.cardHeight + (this.root.buffer * 4);
+        let startY = Vars.cardHeight + (this.root.buffer * 4);
         let c;
        
         this.root.drawPile.forEach( card => {
@@ -55,7 +56,7 @@ export default class {
             this.root.gameBoard.addChild(card);
             c = card;
         })
-        TESTING.printDeck(this.root.drawPile)
+        
         this.root.topDrawPileCard = c;
         ListenerManager.addFlip(this.root.topDrawPileCard);
         this.root.flipPile = [];

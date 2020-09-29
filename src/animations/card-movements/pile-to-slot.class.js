@@ -1,5 +1,5 @@
-import UTILS from '../utils/utils.class';
-import VARS from '../utils/vars.class';
+import Utils from '../utils/utils.class';
+import Vars from '../utils/vars.class';
 import Drag from './drag.class';
 import ListenerManager from './listener-manager.class';
 
@@ -9,12 +9,11 @@ export default class PileToSlot {
         this.root = root;
     }
     static slotHitListener (activeCardObj) {
-        for (let i = 0; i < 4; i ++) {
-    
-            let slotObj = VARS.globalObject(this.root.slots[i]); 
 
+        for (let i = 0; i < 4; i ++) {
+            let slotObj = Vars.globalObject(this.root.slots[i]); 
             if ( 
-                UTILS.rectangleRectangleCollisionDetection(slotObj, activeCardObj) &&
+                Utils.rectangleRectangleCollisionDetection(slotObj, activeCardObj) &&
                 this.root.slots[i].rank === Drag.activeCard.rank &&
                 this.root.slots[i].suit === Drag.activeCard.suit
             ) {

@@ -1,6 +1,6 @@
 import Drag from './drag.class';
-import UTILS from '../utils/utils.class';
-import VARS from '../utils/vars.class';
+import Utils from '../utils/utils.class';
+import Vars from '../utils/vars.class';
 
 
 export default class PileToPile {
@@ -11,7 +11,6 @@ export default class PileToPile {
     }
     static movePileListener (activeCardObj, activeCard) {
         this.activeCard = activeCard;
-        //PILE TO PILE CHECK
         for (let key in this.root.piles) {
             
           let arr = this.root.piles[key],
@@ -19,13 +18,13 @@ export default class PileToPile {
           
           if (!this.activeCard || !topCard || activeCard.index === key) continue;
 
-          let topCardObj = VARS.globalObject(topCard); 
+          let topCardObj = Vars.globalObject(topCard); 
 
-          let alternatingSuitAndOneLower = (topCard.color !== activeCard.color && topCard.rank === (activeCard.rank + 1)) ;
+          let alternatingSuitAndOneLower = (topCard.color !== activeCard.color && topCard.rank === (activeCard.rank + 1));
 
            if ( 
                (alternatingSuitAndOneLower || topCard.marker) &&
-               UTILS.rectangleRectangleCollisionDetection(topCardObj, activeCardObj)
+               Utils.rectangleRectangleCollisionDetection(topCardObj, activeCardObj)
            ) {
                return {hit: true, topCard, key}
            } 
@@ -34,18 +33,23 @@ export default class PileToPile {
        return {hit: false}
    }
    static movePiles (topCard, key) {
-       let storeIndex = this.activeCard.index;
        
-       let temp = [...Drag.dragCont.children], isDrawPile = false, arr;
+       let temp = [...Drag.dragCont.children], 
+           arr;
        temp.forEach ( (card, i) => {
+
            card.x = topCard.x;
-           let yAdjust = (topCard.marker) ? ((i) * (this.root.buffer * 4)) : ((i + 1) * (this.root.buffer * 4));
+
+           let yAdjust = (topCard.marker) ? 
+            ( i * this.root.buffer_larger ) : 
+            ((i + 1) * this.root.buffer_larger ) ;
+
            card.y = topCard.y + yAdjust;
+
            if (!card.drawPile) {
              this.root.piles[card.index].splice(this.root.piles[card.index].indexOf(card), 1)
              arr = this.root.piles[card.index];
            } else {
-               isDrawPile = true;
                card.drawPile = false;
                this.root.flipPile.splice(this.root.flipPile.indexOf(card), 1);
                arr = this.root.flipPile;
@@ -55,8 +59,6 @@ export default class PileToPile {
            this.root.gameBoard.addChild(card);
            card.index = key;
        })
-
-      
        this.root.revealNextCard(arr)
    }
 }
