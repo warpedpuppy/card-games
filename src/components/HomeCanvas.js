@@ -1,28 +1,29 @@
 import React from 'react'
-import Script from '../animations/homecanvas.script';
+import SolitaireBasic from './SolitaireBasic';
+import SolitaireAnimated from './SolitaireAnimated';
 import './HomeCanvas.css'
 export default class HomeCanvas extends React.Component {
-    componentDidMount () {
-        Script.init();
+    state = {
+      game: "basic"
     }
-    shuffle = (e) => {
+    changeGame = (e, game) => {
       e.preventDefault();
-      Script.shuffle();
-
-    }
-    solitaireDeal = (e) => {
-      e.preventDefault();
-      Script.solitaireDeal();
+      this.setState({game})
     }
     render () {
+          let game = (this.state.game === "basic") ? <SolitaireBasic /> : <SolitaireAnimated /> ;
+
           return (
           <>
-          <div id="home-canvas"></div>
-          <div id="button-div">
-            <button onClick={ this.solitaireDeal }>deal for solitare</button>
-            <button onClick={ this.shuffle }>shuffle</button>
-            <button disabled>layout</button>
-          </div>
+            <div id="button-div">
+              <button 
+              disabled={this.state.game === "basic"} 
+              onClick={ (e) => this.changeGame(e, "basic") }>basic</button>
+              <button  
+              disabled={this.state.game === "animated"} 
+              onClick={ (e) => this.changeGame(e, "animated") }>animated</button>
+            </div>
+             { game }
           </>
           )
     }
