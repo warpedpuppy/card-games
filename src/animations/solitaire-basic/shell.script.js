@@ -9,10 +9,14 @@ export default {
         });
         document.getElementById("home-canvas").appendChild(app.view);
         app.ticker.add(this.ticker);
+        this.app = app;
 
         this.solitaire = new SOLITARE(app);
         app.stage.addChild(this.solitaire.gameBoard);
 
+    },
+    destroy: function () {
+        this.app.destroy();
     },
     ticker: function(delta) {
 
