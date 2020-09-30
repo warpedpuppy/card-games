@@ -1,10 +1,10 @@
 import * as PIXI from 'pixi.js';
-import Slot from './visual-assets/slot.class';
-import Deck from './visual-assets/deck.class';
-import Marker from './visual-assets/marker.class';
-import ListenerManager from './card-movements/listener-manager.class';
-import VARS from './utils/vars.class';
-import TESTING from './utils/testing.class';
+import Slot from './visual-assets/Slot.class';
+import Deck from './visual-assets/Deck.class';
+import Marker from './visual-assets/Marker.class';
+import ListenerManager from './card-movements/Listener-Manager.class';
+import VARS from './utils/Vars.class';
+import TESTING from './utils/Testing.class';
 import _ from 'lodash';
 
 export default class Solitare {

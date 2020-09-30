@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import VARS from '../utils/vars.class';
+import VARS from '../utils/Vars.class';
 
 export default class Slot extends PIXI.Container {
     constructor (suit) {

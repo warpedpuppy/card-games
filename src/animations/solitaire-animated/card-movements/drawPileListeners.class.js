@@ -1,6 +1,6 @@
-import ListenerManager from "./listener-manager.class";
-import Vars from '../utils/vars.class';
-import Testing from '../utils/testing.class';
+import ListenerManager from "./Listener-Manager.class";
+import Vars from '../utils/Vars.class';
+import Testing from '../utils/Testing.class';
 
 
 export default class {

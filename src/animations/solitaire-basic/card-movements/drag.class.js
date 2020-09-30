@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js';
-import Vars from '../utils/vars.class';
-import PileToPile from './pile-to-pile.class';
-import PileToSlot from './pile-to-slot.class';
-import Testing from '../utils/testing.class';
+import Vars from '../utils/Vars.class';
+import PileToPile from './Pile-to-Pile.class';
+import PileToSlot from './Pile-to-Slot.class';
+import Testing from '../utils/Testing.class';
 export default class Drag {
     static activeCard = undefined;
     static dragCont = new PIXI.Container();
@@ -19,16 +19,18 @@ export default class Drag {
     static onDragStart (e) {
 
         this.activeCard = e.target;
-        let arr = (!this.activeCard.drawPile) ? this.root.piles[this.activeCard.index] : this.root.flipPile;
-       
-        let globalPoint = this.activeCard.getGlobalPosition(new PIXI.Point(this.activeCard.x, this.activeCard.y))
+
+        let arr = (!this.activeCard.drawPile) ? this.root.piles[this.activeCard.index] : this.root.flipPile,
+            globalPoint = this.activeCard.getGlobalPosition(new PIXI.Point(this.activeCard.x, this.activeCard.y)),
+            activeCardIndex = arr.indexOf(this.activeCard), 
+            yOffset = 0;
+
         this.dragCont.x = globalPoint.x;
         this.dragCont.y = globalPoint.y;
         this.dragCont.adjustX = Math.abs(e.data.global.x - globalPoint.x);
         this.dragCont.adjustY = Math.abs(e.data.global.y - globalPoint.y);
         this.activeCard.storePos = {x: this.activeCard.x, y: this.activeCard.y};
         
-       let activeCardIndex = arr.indexOf(this.activeCard), yOffset = 0;
         for (let i = activeCardIndex; i < arr.length; i++) {
                 arr[i].storePos = {x: arr[i].x, y: arr[i].y};
                 arr[i].x = 0;
@@ -36,17 +38,20 @@ export default class Drag {
                 this.dragCont.addChild(arr[i]);
                 yOffset++;
         }
-       Testing.beingCarried(this.dragCont.children)
 
-       this.root.app.stage.addChild(this.dragCont)
+        this.root.app.stage.addChild(this.dragCont)
+
+        Testing.beingCarried(this.dragCont.children)
+
     }
     static onDragEnd () {
 
         if (!this.activeCard) return;
 
-        let activeCardObj = Vars.globalObject(this.activeCard);
-        let slotHitObject = PileToSlot.slotHitListener(activeCardObj, this)
-        let pileHitObject = PileToPile.movePileListener(activeCardObj, this.activeCard)
+        let activeCardObj = Vars.globalObject(this.activeCard),
+            slotHitObject = PileToSlot.slotHitListener(activeCardObj, this),
+            pileHitObject = PileToPile.movePileListener(activeCardObj, this.activeCard);
+            
          if (this.dragCont.children.length === 1 && slotHitObject.hit) {
                 let slot = slotHitObject.slot;
                 PileToSlot.addCardToSlot(slot, this);

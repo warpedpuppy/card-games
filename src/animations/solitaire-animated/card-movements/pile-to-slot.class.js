@@ -1,7 +1,7 @@
-import Utils from '../utils/utils.class';
-import Vars from '../utils/vars.class';
-import Drag from './drag.class';
-import ListenerManager from './listener-manager.class';
+import Utils from '../utils/Utils.class';
+import Vars from '../utils/Vars.class';
+import Drag from './Drag.class';
+import ListenerManager from './Listener-Manager.class';
 
 export default class PileToSlot {
     static root = undefined;

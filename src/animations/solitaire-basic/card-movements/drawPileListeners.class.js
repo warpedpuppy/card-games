@@ -1,6 +1,6 @@
-import ListenerManager from "./listener-manager.class";
-import Vars from '../utils/vars.class';
-import Testing from '../utils/testing.class';
+import ListenerManager from "./Listener-Manager.class";
+import Vars from '../utils/Vars.class';
+import Testing from '../utils/Testing.class';
 
 
 export default class {
@@ -44,8 +44,7 @@ export default class {
         ListenerManager.removeResetFlip(this.root.resetDrawPileButton);
 
         this.root.drawPile = [...this.root.flipPile].reverse();
-        let startY = Vars.cardHeight + (this.root.buffer * 4);
-        let c;
+        let startY = Vars.cardHeight + (this.root.buffer * 4), c;
        
         this.root.drawPile.forEach( card => {
             card.reveal(false);

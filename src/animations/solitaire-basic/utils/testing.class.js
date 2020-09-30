@@ -11,10 +11,11 @@ export default class Testing {
         let returnObj = {};
         arr.forEach( card => {
             if (card._eventsCount) {
+                let coveredString = card.cover.visible ? `(draw pile card)` : `` ;
                 if (!returnObj[card._eventsCount]) {
-                    returnObj[card._eventsCount] = [`${card.rank} of ${card.suit}`]
+                    returnObj[card._eventsCount] = [`${card.rank} of ${card.suit} ${coveredString}`]
                 } else {
-                    returnObj[card._eventsCount].push(`${card.rank} of ${card.suit}`)
+                    returnObj[card._eventsCount].push(`${card.rank} of ${card.suit} ${coveredString}`)
                 }
             } 
         })

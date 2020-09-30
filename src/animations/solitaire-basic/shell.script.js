@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
-import VARS from './utils/vars.class';
-import SOLITARE from './solitaire.class';
+import VARS from './utils/Vars.class';
+import SOLITARE from './Solitaire.class';
 export default {
     init: function () {
 

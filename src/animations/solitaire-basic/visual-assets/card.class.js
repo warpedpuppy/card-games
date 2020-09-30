@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import Vars from '../utils/vars.class';
+import Vars from '../utils/Vars.class';
 
 export default class Card extends PIXI.Container {
     cover = new PIXI.Graphics();

@@ -1,4 +1,4 @@
-import Card from './card.class';
+import Card from './Card.class';
 
 export default class Deck extends Array {
     

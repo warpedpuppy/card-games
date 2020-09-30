@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import Vars from '../utils/vars.class';
+import Vars from '../utils/Vars.class';
 
 export default class Card extends PIXI.Container {
     cover = new PIXI.Graphics();
@@ -7,6 +7,11 @@ export default class Card extends PIXI.Container {
     suit = undefined;
     color = undefined;
     drawPile = false;
+    dest = undefined;
+    storePos = undefined;
+    storeParent = undefined;
+    vx = 0;
+    vy = 0;
     constructor(rank, suitIndex) {
         super();
         this.rank = rank + 1;
@@ -14,6 +19,11 @@ export default class Card extends PIXI.Container {
         this.color = (this.suit === 'hearts' || this.suit === 'diamonds') ? "red" : "black" ;
         this.buildCard(rank, suitIndex);
         this.reveal(false);
+        // this.pivot.x = Vars.cardWidth / 2;
+        // this.pivot.y = Vars.cardHeight / 2;
+    }
+    setDestination (x,y) {
+        this.dest = {x, y};
     }
     reveal (boolean) {
         this.cover.visible = !boolean;

@@ -1,8 +1,10 @@
 import * as PIXI from 'pixi.js';
-import Vars from '../utils/vars.class';
-import PileToPile from './pile-to-pile.class';
-import PileToSlot from './pile-to-slot.class';
-import Testing from '../utils/testing.class';
+import Vars from '../utils/Vars.class';
+import PileToPile from './Pile-to-Pile.class';
+import PileToSlot from './Pile-to-Slot.class';
+import Testing from '../utils/Testing.class';
+import Tweening from '../utils/Tweening.class';
+import Utils from '../utils/Utils.class';
 export default class Drag {
     static activeCard = undefined;
     static dragCont = new PIXI.Container();
@@ -22,8 +24,8 @@ export default class Drag {
         let arr = (!this.activeCard.drawPile) ? this.root.piles[this.activeCard.index] : this.root.flipPile;
        
         let globalPoint = this.activeCard.getGlobalPosition(new PIXI.Point(this.activeCard.x, this.activeCard.y))
-        this.dragCont.x = globalPoint.x;
-        this.dragCont.y = globalPoint.y;
+        // this.dragCont.x = globalPoint.x;
+        // this.dragCont.y = globalPoint.y;
         this.dragCont.adjustX = Math.abs(e.data.global.x - globalPoint.x);
         this.dragCont.adjustY = Math.abs(e.data.global.y - globalPoint.y);
         this.activeCard.storePos = {x: this.activeCard.x, y: this.activeCard.y};
@@ -40,7 +42,7 @@ export default class Drag {
 
        this.root.app.stage.addChild(this.dragCont)
     }
-    static onDragEnd () {
+    static onDragEnd (e) {
 
         if (!this.activeCard) return;
 
@@ -55,8 +57,15 @@ export default class Drag {
          } else {
                 let tempArray = [...this.dragCont.children];
                 tempArray.forEach( card => {
-                    card.x = card.storePos.x;
-                    card.y = card.storePos.y;
+                    let tempX = e.data.global.x - this.root.gameBoard.x - this.dragCont.adjustX,
+                        tempY = e.data.global.y - this.root.gameBoard.y - this.dragCont.adjustY;
+                    card.makeInteractive(false)
+                    Tweening.tween(card, Utils.randomNumberBetween(0.5, 0.95), 
+                        {
+                            x: [tempX, card.storePos.x], 
+                            y: [tempY, card.storePos.y],
+                            // rotation: [360, 0]
+                        }, this.onTweenComplete.bind(this, card), 'bounce')
                     this.root.gameBoard.addChild(card)
                 })
          }
@@ -67,12 +76,42 @@ export default class Drag {
 
         Testing.howManyListeners(this.root.deck)
     }
+    static onTweenComplete (card) {
+        console.log("done", card)
+        card.makeInteractive(true)
+        card.x = card.storePos.x;
+        card.y = card.storePos.y;
+    }
     static onDragMove (e) {
         if (this.activeCard) {
             const newPosition = e.data.getLocalPosition(this.dragCont.parent);
-            this.dragCont.x = newPosition.x - this.dragCont.adjustX;
-            this.dragCont.y = newPosition.y - this.dragCont.adjustY;
+            // this.dragCont.x = newPosition.x - this.dragCont.adjustX;
+            // this.dragCont.y = newPosition.y - this.dragCont.adjustY;
+            this.dragCont.x = this.dragCont.y = 0;
+            let arr = this.dragCont.children;
+            this.moveBall(arr[0], newPosition.x - this.dragCont.adjustX, newPosition.y - this.dragCont.adjustY);
+            let i, ballA, ballB;
+            arr[0].x = newPosition.x - this.dragCont.adjustX;
+            arr[0].y = newPosition.y - this.dragCont.adjustY;
+            let yOffset = 1;
+            for (i = 1; i < arr.length; i++) {
+                ballA = arr[i-1];
+                ballB = arr[i];
+                let yVal = yOffset * 40;
+                this.moveBall(ballB, ballA.x, ballA.y, yVal);
+                yOffset ++;
+            };
         }
+    }
+    static moveBall (ball, targetX, targetY, yVal) {
+        var tempBallBody = ball;
+        ball.vx += (targetX - tempBallBody.x) * 0.0025;
+        ball.vy += (targetY - tempBallBody.y) * 0.0025;
+        ball.vy += 2.5;
+        ball.vx *= 0.8;
+        ball.vy *= 0.8;
+        tempBallBody.x += ball.vx;
+        tempBallBody.y = targetY + yVal;
     }
     static addDrag (item) {
 

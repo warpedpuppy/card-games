@@ -1,7 +1,6 @@
-import Drag from './drag.class';
-import Utils from '../utils/utils.class';
-import Vars from '../utils/vars.class';
-
+import Drag from './Drag.class';
+import Utils from '../utils/Utils.class';
+import Vars from '../utils/Vars.class';
 
 export default class PileToPile {
 
