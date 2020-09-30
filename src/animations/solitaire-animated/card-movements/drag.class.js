@@ -13,6 +13,7 @@ export default class Drag {
     parent = undefined;
     drawPile = undefined;
     root = undefined;
+    static e = undefined;
     static setRoot(root) {
         this.root = root;
         PileToSlot.setRoot(root);
@@ -83,6 +84,29 @@ export default class Drag {
         card.y = card.storePos.y;
     }
     static onDragMove (e) {
+        this.e = e;
+        // if (this.activeCard) {
+        //     const newPosition = e.data.getLocalPosition(this.dragCont.parent);
+        //     // this.dragCont.x = newPosition.x - this.dragCont.adjustX;
+        //     // this.dragCont.y = newPosition.y - this.dragCont.adjustY;
+        //     this.dragCont.x = this.dragCont.y = 0;
+        //     let arr = this.dragCont.children;
+        //     this.moveBall(arr[0], newPosition.x - this.dragCont.adjustX, newPosition.y - this.dragCont.adjustY);
+        //     let i, ballA, ballB;
+        //     arr[0].x = newPosition.x - this.dragCont.adjustX;
+        //     arr[0].y = newPosition.y - this.dragCont.adjustY;
+        //     let yOffset = 1;
+        //     for (i = 1; i < arr.length; i++) {
+        //         ballA = arr[i-1];
+        //         ballB = arr[i];
+        //         let yVal = yOffset * 40;
+        //         this.moveBall(ballB, ballA.x, ballA.y, yVal);
+        //         yOffset ++;
+        //     };
+        // }
+    }
+    static animate () {
+        let e = this.e;
         if (this.activeCard) {
             const newPosition = e.data.getLocalPosition(this.dragCont.parent);
             // this.dragCont.x = newPosition.x - this.dragCont.adjustX;
@@ -105,8 +129,8 @@ export default class Drag {
     }
     static moveBall (ball, targetX, targetY, yVal) {
         var tempBallBody = ball;
-        ball.vx += (targetX - tempBallBody.x) * 0.0025;
-        ball.vy += (targetY - tempBallBody.y) * 0.0025;
+        ball.vx += (targetX - tempBallBody.x) * 0.1;
+        ball.vy += (targetY - tempBallBody.y) * 0.1;
         ball.vy += 2.5;
         ball.vx *= 0.8;
         ball.vy *= 0.8;
