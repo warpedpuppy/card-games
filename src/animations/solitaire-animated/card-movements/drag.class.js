@@ -66,7 +66,7 @@ export default class Drag {
                             x: [tempX, card.storePos.x], 
                             y: [tempY, card.storePos.y],
                             // rotation: [360, 0]
-                        }, this.onTweenComplete.bind(this, card), 'bounce')
+                        }, this.onTweenComplete.bind(this, card), 'bouncePast')
                     this.root.gameBoard.addChild(card)
                 })
          }
@@ -85,32 +85,11 @@ export default class Drag {
     }
     static onDragMove (e) {
         this.e = e;
-        // if (this.activeCard) {
-        //     const newPosition = e.data.getLocalPosition(this.dragCont.parent);
-        //     // this.dragCont.x = newPosition.x - this.dragCont.adjustX;
-        //     // this.dragCont.y = newPosition.y - this.dragCont.adjustY;
-        //     this.dragCont.x = this.dragCont.y = 0;
-        //     let arr = this.dragCont.children;
-        //     this.moveBall(arr[0], newPosition.x - this.dragCont.adjustX, newPosition.y - this.dragCont.adjustY);
-        //     let i, ballA, ballB;
-        //     arr[0].x = newPosition.x - this.dragCont.adjustX;
-        //     arr[0].y = newPosition.y - this.dragCont.adjustY;
-        //     let yOffset = 1;
-        //     for (i = 1; i < arr.length; i++) {
-        //         ballA = arr[i-1];
-        //         ballB = arr[i];
-        //         let yVal = yOffset * 40;
-        //         this.moveBall(ballB, ballA.x, ballA.y, yVal);
-        //         yOffset ++;
-        //     };
-        // }
     }
     static animate () {
         let e = this.e;
         if (this.activeCard) {
             const newPosition = e.data.getLocalPosition(this.dragCont.parent);
-            // this.dragCont.x = newPosition.x - this.dragCont.adjustX;
-            // this.dragCont.y = newPosition.y - this.dragCont.adjustY;
             this.dragCont.x = this.dragCont.y = 0;
             let arr = this.dragCont.children;
             this.moveBall(arr[0], newPosition.x - this.dragCont.adjustX, newPosition.y - this.dragCont.adjustY);
@@ -121,7 +100,7 @@ export default class Drag {
             for (i = 1; i < arr.length; i++) {
                 ballA = arr[i-1];
                 ballB = arr[i];
-                let yVal = yOffset * 40;
+                let yVal = yOffset * 10;
                 this.moveBall(ballB, ballA.x, ballA.y, yVal);
                 yOffset ++;
             };
@@ -135,7 +114,11 @@ export default class Drag {
         ball.vx *= 0.8;
         ball.vy *= 0.8;
         tempBallBody.x += ball.vx;
-        tempBallBody.y = targetY + yVal;
+        tempBallBody.y += (ball.vy + yVal);
+        console.log(ball.vx, ball.vy)
+        let deg = Utils.deg2rad(ball.vx);
+        ball.rotation = (deg * 2);
+
     }
     static addDrag (item) {
 
