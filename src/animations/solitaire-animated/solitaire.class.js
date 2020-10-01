@@ -43,7 +43,7 @@ export default class Solitare {
             totalColumns:  7
         }
 
-        //this.shuffle();
+        this.shuffle();
         
        // CARD PILES
         let { adjustedStartY, adjustedCardCounter } = this.createCardPiles(obj);
