@@ -81,7 +81,7 @@ export default class Solitare {
         for (let i = 0; i < loopingQ; i++) {
             let marker = new Marker();
             marker.index = i;
-            marker.x = startX + (VARS.cardWidth + this.buffer) * i;
+            marker.x = startX + (VARS.cardWidth + this.buffer) * i ;
             marker.y = startY;
             this.gameBoard.addChild(marker);
             this.piles[i] = [marker]
@@ -92,7 +92,7 @@ export default class Solitare {
             
                 card = this.deck[cardCounter];
                 card.x = startX + (VARS.cardWidth + this.buffer) * j;
-                card.y = startY + (this.buffer * i);
+                card.y = startY + (5 * i);
                 this.gameBoard.addChild(card);
                 cardCounter ++;
 
@@ -136,7 +136,7 @@ export default class Solitare {
             card.x = 0;
             card.y = startY;
             this.gameBoard.addChild(card);
-            startY += 1;
+            startY += 0.25;
             card.isDrawPile(true);
             this.drawPile.push(card);
         }

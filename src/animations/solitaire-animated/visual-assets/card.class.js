@@ -43,31 +43,31 @@ export default class Card extends PIXI.Container {
 
         const graphics = new PIXI.Graphics();
         graphics.beginFill(0xCCCCCC);
-        graphics.drawRoundedRect(5, 5, Vars.cardWidth - 10, Vars.cardHeight - 10, 10);
+        graphics.drawRoundedRect(2, 2, Vars.cardWidth - 4, Vars.cardHeight - 4, 10);
         graphics.endFill();
         this.addChild(graphics)
 
+        let textColor = this.color === "black" ? 0x000000 : 0xFF1010 ;
+
         let rank = new PIXI.Text(Vars.rank[rankProp], {
-            fontFamily : 'Arial', 
+            fontFamily : 'Arial Black', 
             fontSize: 10, 
-            fill : 0xff1010,
+            fill : textColor,
             align : 'center'});
         rank.y = 10
         rank.x = 15;
         this.addChild(rank);
 
         let suit = new PIXI.Text(Vars.suits[suitIndexProp], {
-            fontFamily : 'Arial', 
+            fontFamily : 'Arial Black',
             fontSize: 10, 
-            fill : 0xff1010,
+            fill : textColor,
             align : 'center'});
         suit.x = 15;
         suit.y = 22;
         this.addChild(suit)
-
-        this.cover.beginFill(0x669900);
-        this.cover.drawRoundedRect(2, 2, Vars.cardWidth - 4, Vars.cardHeight - 4, 10);
-        this.cover.endFill();
+        
+        this.cover = new PIXI.Sprite(PIXI.Texture.from('/bmps/cardBack.png'))
 
         this.addChild(this.cover);
     }

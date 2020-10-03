@@ -3,11 +3,11 @@ import Script from '../animations/solitaire-animated/shell.script';
 import './HomeCanvas.css'
 export default class SolitaireAnimated extends React.Component {
     componentDidMount () {
-        Script.init();
+        this.script = new Script();
     }
     componentWillUnmount () {
         console.log('unmount animated')
-        Script.destroy();
+        //this.script.destroy();
     }
     render () {
           return (

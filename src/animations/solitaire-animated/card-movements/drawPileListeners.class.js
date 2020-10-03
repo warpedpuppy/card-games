@@ -21,7 +21,7 @@ export default class {
             card.reveal(true);
             ListenerManager.removeAllListeners(card)
             this.root.gameBoard.addChild(card)
-            let newY = card.y + Vars.cardHeight + 120;
+            let newY = card.y + Vars.cardHeight + 50;
             card.makeInteractive(false);
             let timing = 0.5 * (0.5 * (i+1))
             Tweening.tween(card, timing, {y: [card.y, newY]}, this.completeMove.bind(card, i), 'bounce')
@@ -58,7 +58,7 @@ export default class {
             ListenerManager.removeAllListeners(card)
             card.x = 0;
             card.y = startY;
-            startY += 1;
+            startY += 0.25;
             this.root.gameBoard.addChild(card);
             c = card;
         })
