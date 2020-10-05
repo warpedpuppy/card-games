@@ -25,6 +25,7 @@ export default class PileToSlot {
     static addCardToSlot (slot) {
         ListenerManager.removeAllListeners(Drag.activeCard);
         this.root.slotCont.addChild(Drag.activeCard);
+        Drag.activeCard.pivot.set(0);
         Drag.activeCard.x = slot.x;
         Drag.activeCard.y = slot.y;
         let tempArray = (!Drag.activeCard.drawPile) ? this.root.piles[Drag.activeCard.index] : this.root.flipPile;

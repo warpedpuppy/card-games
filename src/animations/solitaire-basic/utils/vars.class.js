@@ -7,6 +7,7 @@ export default class Vars {
     static canvasHeight =  800;
     static suits =  ["clubs", "diamonds", "hearts", "spades"];
     static rank =  ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+    static animate = true;
     static globalObject(item) {
        
         let activeCardGlobalPoint = item.getGlobalPosition(new PIXI.Point(item.x, item.y))

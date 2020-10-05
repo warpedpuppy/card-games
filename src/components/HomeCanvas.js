@@ -4,7 +4,7 @@ import SolitaireAnimated from './SolitaireAnimated';
 import './HomeCanvas.css'
 export default class HomeCanvas extends React.Component {
     state = {
-      game: "animated"
+      game: "basic"
     }
     changeGame = (e, game) => {
       e.preventDefault();

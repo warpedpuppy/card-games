@@ -7,7 +7,7 @@ export default class SolitaireAnimated extends React.Component {
     }
     componentWillUnmount () {
         console.log('unmount animated')
-        //this.script.destroy();
+        this.script.destroy();
     }
     render () {
           return (

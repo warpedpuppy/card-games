@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js';
 import VARS from './utils/Vars.class';
 import SOLITARE from './Solitaire.class';
+import Tweening from './utils/Tweening.class';
+import Drag from './card-movements/Drag.class';
 export default {
     init: function () {
 
@@ -19,6 +21,7 @@ export default {
         this.app.destroy();
     },
     ticker: function(delta) {
-
+        Tweening.animate();
+        Drag.animate();
     }
 }

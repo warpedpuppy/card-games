@@ -3,7 +3,6 @@ import Vars from './utils/Vars.class';
 import Solitaire from './Solitaire.class';
 import Tweening from './utils/Tweening.class';
 import Drag from './card-movements/Drag.class';
-import Background from './decorative-elements/Background.class';
 import FishSchool from './decorative-elements/FishSchool.class';
 import WaterRipples from './decorative-elements/WaterRipples.class';
 export default class Shell {
@@ -17,8 +16,6 @@ export default class Shell {
         app.ticker.add(this.ticker.bind(this));
         this.app = app;
 
-        this.background = new Background();
-        app.stage.addChild(this.background);
 
         this.fishSchool = new FishSchool();
         app.stage.addChild(this.fishSchool);
@@ -37,7 +34,6 @@ export default class Shell {
         Tweening.animate();
         Drag.animate();
         this.fishSchool.animate();
-        this.background.animate();
         this.waterRipples.animate();
     }
 }

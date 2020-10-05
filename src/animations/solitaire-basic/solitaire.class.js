@@ -6,6 +6,7 @@ import ListenerManager from './card-movements/Listener-Manager.class';
 import VARS from './utils/Vars.class';
 import TESTING from './utils/Testing.class';
 import _ from 'lodash';
+import DrawPileListenersClass from './card-movements/DrawPileListeners.class';
 
 export default class Solitare {
     buffer = 10;
@@ -48,8 +49,10 @@ export default class Solitare {
        // CARD PILES
         let { adjustedStartY, adjustedCardCounter } = this.createCardPiles(obj);
 
+        this.createDrawPileResetButton(adjustedStartY);
         // DRAW PILE
-        this.createDrawPile(adjustedCardCounter, adjustedStartY);
+        let arr = this.deck.slice(adjustedCardCounter, 52)
+        this.createDrawPile(adjustedStartY, arr, true);
 
         // SLOTS 
         this.createSlots();
@@ -126,23 +129,23 @@ export default class Solitare {
         this.resetDrawPileButton.visible = false;
         this.gameBoard.addChild(this.resetDrawPileButton);
     };
-    createDrawPile(cardCounter, startY) {
+    createDrawPile(startY, arr, init) {
+       
+        let c;
+        arr.forEach( card => {
+                card.x = 0;
+                card.y = startY;
+                card.reveal(false);
+                this.gameBoard.addChild(card);
+                startY += 0.25;
+                card.isDrawPile(true);
+                if (init) this.drawPile.push(card);
+                c = card;
+            }
+        )
 
-        this.createDrawPileResetButton(startY);
-
-        let card;
-        for (let i = cardCounter; i < 52; i ++) {
-            card = this.deck[i];
-            card.x = 0;
-            card.y = startY;
-            this.gameBoard.addChild(card);
-            startY += 1;
-            card.isDrawPile(true);
-            this.drawPile.push(card);
-        }
        TESTING.printDeck(this.drawPile)
-       this.topDrawPileCard = card;
-
+       this.topDrawPileCard = c;
        ListenerManager.addFlip(this.topDrawPileCard);
      
     }

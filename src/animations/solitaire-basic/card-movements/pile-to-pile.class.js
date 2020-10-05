@@ -38,7 +38,7 @@ export default class PileToPile {
        temp.forEach ( (card, i) => {
 
            card.x = topCard.x;
-
+           card.pivot.set(0)
            let yAdjust = (topCard.marker) ? 
             ( i * this.root.buffer_larger ) : 
             ((i + 1) * this.root.buffer_larger ) ;

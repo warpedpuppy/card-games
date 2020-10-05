@@ -39,6 +39,7 @@ export default class PileToPile {
 
            card.x = topCard.x;
            card.pivot.set(0)
+           card.rotation.set(0)
 
            let yAdjust = (topCard.marker) ? 
             ( i * this.root.buffer_larger ) : 
